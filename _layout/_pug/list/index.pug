@@ -1,0 +1,36 @@
+extends ../common/layout.pug
+
+block title
+	title 天祺的空间
+	meta(name="keywords", content="博客文章列表")
+	meta(name="description", content="博客文章列表")
+
+block extra-head
+	link(rel="stylesheet", href="/css/list.css")
+
+block main
+	ul.posts-list
+		each post in postList
+			li.post-item
+				a.post-hd(href="/posts/#{post.title}")
+					h3.title
+						span.underline= post.title
+					.date= post.createtime
+				.post-bd
+					.cover
+						.cover-wrapper
+							img(src=post.cover)
+							i.valign
+					.description= post.description
+					.more more >>
+
+	- var prevUrl = curPage!=1 ? "/list/"+(curPage-1) : null;
+	- var nextUrl = curPage!=totalPage ? "/list/"+(curPage+1) : null;
+	section.pagination
+		.prev.pagination-wrapper(style="float:left")
+			if prevUrl
+				a(href=prevUrl) Prev
+		.next-pagination-wrapper(style="float:right")
+			if nextUrl
+				a(href=nextUrl) Next
+

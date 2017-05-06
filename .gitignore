@@ -1,0 +1,17 @@
+##  .gitignore
+
+*~
+*#
+
+*.bak
+*.log
+*.sw[po]
+*.map
+
+logs
+.idea/
+
+**/node_modules/**/*
+**/bower_components/**/*
+
+

@@ -1,0 +1,17 @@
+html
+	head
+		block title
+			title= title
+			meta(name="keywords", content=keywords)
+			meta(name="description", content=description)
+		include ./head.pug
+		link(rel="stylesheet", href="/css/base.css")
+		block extra-head
+	body
+		include ./header.pug
+		.main-wrapper
+			main#main
+				block main
+			include ./footer.pug
+		block post-scripts
+

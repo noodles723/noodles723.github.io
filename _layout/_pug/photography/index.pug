@@ -1,0 +1,26 @@
+extends ../common/layout.pug
+
+block title
+	title 摄影集
+	meta(name="keywords", content="摄影集, photography")
+	meta(name="description", content="摄影集, photography")
+
+block extra-head
+	link(rel="stylesheet", href="/css/album.css")
+
+block main
+	- var cdn = cdn || "";
+	each albumList, year in albumObj
+		section
+			.album-year
+				h3= year
+			.album-wrapper
+				each name in albumList
+					a.album(href="/photography/"+year+"/"+name)
+						p.loading.
+							<span class="one">.</span>
+							<span class="two">.</span>
+							<span class="three">.</span>
+						img(src=cdn+"/photography/"+year+"/"+name+"/cover.jpg")
+						.overlay
+							.name= name

@@ -1,0 +1,29 @@
+@media screen and (max-width: 768px)
+    #blog-header-nav
+        display: none
+    body > article
+        box-sizing: border-box
+        width:100%
+        padding: 2.5em 1.5em
+        font-size: 16px
+    #post-content
+        h1, h2
+            font-size: 1.8em
+        h3
+            font-size: 1.5em
+        h4
+            margin-top: 0
+        #post-content-body
+            padding: 2em 0 0            
+            
+@media screen and (min-width: 769px) and (max-width: 1024px)
+    #blog-header-nav
+        visibility: visible
+        .nav-list
+            font-size: 18px
+            display: block
+            li
+                display:block
+                &:before
+                    content: ''
+                    margin-right: 0

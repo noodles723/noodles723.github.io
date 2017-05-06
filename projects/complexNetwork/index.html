@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Graph</title>
+  <link rel="stylesheet" href="./css/main.css" />
+</head>
+<body>
+  <div class="container">
+  </div>
+  <div class="helper-panel panel">
+    <div class="selector ">
+      <b>Attack Type: </b>
+      <select id="attack-type" name="attack-type">
+        <option value="none">none</option>
+        <option value="random failure">random failure</option>
+        <option value="intentional">intentional</option>
+        <option value="one-neighbor">one-neighbor</option>
+        <option value="p-neighbor">p-neighbor</option>
+      </select>
+    </div>
+  </div>
+  <script src="./lib/d3.js"></script>
+  <script src="./lib/lodash.js"></script>
+  <script src="./lib/jquery.js"></script>
+  <script src="./graph.js"></script>
+  <script src="./d3config.js"></script>
+  <script src="./attack.js"></script>
+  <script src="./main.js"></script>
+  <div class="tip-container" style="visibility:hidden">
+    <p><b>Type: </b><span class='type'></span></p>
+    <p><b>Step: </b><span class='step'></span></p>
+    <p><b>AvgDegree: </b><span class='avgDegree'></span></p>
+    <p><b>Links: </b><span class='links'></span></p>
+    <p><b>Nodes: </b><span class='nodes'></span></p>
+  </div>
+</body>
+</html>
+

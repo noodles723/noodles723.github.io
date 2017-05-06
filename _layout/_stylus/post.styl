@@ -1,0 +1,49 @@
+@import 'libs/hljs-github.css'
+@import 'common/_typography'
+
+#post-content
+  typo-article()
+  .date
+    color: #999
+
+.post-content-body
+  padding: 7em 0 0
+
+.post-content-header
+  h2
+    font-size: 42px
+    line-height: 2
+    font-weight: $bolderWeight
+
+#post-content-footer
+  margin-top: 2em
+  border-top: 1px solid #ccc
+  padding: 2em 0 7em
+  position: relative
+  .row-half
+      width: 45%
+      vertical-align: top
+      display: inline-block
+  .next
+      text-align: right
+      margin-right: 1em
+      float: right
+  .post-switcher
+      font-family: $SansSerifFont
+      display: block
+      h4
+          margin-top: 0
+  .prev
+      margin-left: 1em
+      float: left
+
+  label
+      display: block
+      font-size: 16px
+
+  .post-switcher:hover
+      .title span
+          position: relative
+
+.comments-section
+  margin-top: 5em

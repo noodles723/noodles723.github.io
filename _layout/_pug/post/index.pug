@@ -1,0 +1,33 @@
+extends ../common/layout.pug
+
+block extra-head
+	link(rel="stylesheet", href="/css/post.css")
+	link(rel="stylesheet", href="/css/libs/hljs-github.css")
+
+block main
+	article#post-content
+		header.post-content-header
+			h1= post.title
+			span.date= post.createtime
+		.post-content-body
+			.article-content= post.content
+			footer
+				.comments-section
+					#disqus_thread
+						script
+							include ./disqus.js
+
+		footer.post-content-footer
+			if prev
+				.row-half.prev
+					a.post-switcher(href="/posts/#{prev}")
+						label Prev
+						h4.title
+							span= prev
+			if next
+				.row-half.next
+					a.post-switcher(href="/posts/#{next}")
+						label Next
+						h4.title
+							span= next
+

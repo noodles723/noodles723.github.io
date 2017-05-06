@@ -1,0 +1,25 @@
+extends ../../common/layout.pug
+
+block title
+	title 相册
+	meta(name="keywords", content="相册, album")
+	meta(name="description", content="相册, album")
+
+block extra-head
+	link(rel="stylesheet", href="/css/photo.css")
+
+block main
+	- var cdn = cdn || "";
+	each photo, index in photoList
+		.asset(data-id=index)
+			p.loading.
+				<span class="one">.</span>
+				<span class="two">.</span>
+				<span class="three">.</span>
+			.photo
+				img(src=cdn+"/photography/"+photo)
+
+block post-scripts
+	<script>
+		include ./photo.js
+	</script>

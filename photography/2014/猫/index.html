@@ -1,0 +1,80 @@
+<html><head><title>相册</title><meta name="keywords" content="相册, album"/><meta name="description" content="相册, album"/><meta charset="UTF-8"/><meta name="renderer" content="webkit"/><meta name="referrer" content="always"/><meta name="googlebot" content="NOODP"/><meta name="viewport" content="width=device-width,initial-scale=1.0,height=device-height,user-scalable=no,minimum-scale=1.0,maximum-scale=1.0"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="apple-mobile-web-app-status-bar-style" content="black"/><meta name="format-detection" content="telephone=no, email=no"/><meta name="robots" content="index,follow"/><meta http-equiv="Cache-Control" content="no-siteapp"/><meta name="renderer" content="webkit"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="HandheldFriendly" content="true"/><meta name="MobileOptimized" content="320"/><meta name="screen-orientation" content="portrait"/><meta name="x5-orientation" content="portrait"/><meta name="full-screen" content="yes"/><meta name="x5-fullscreen" content="true"/><meta name="browsermode" content="application"/><meta name="x5-page-mode" content="app"/><meta name="msapplication-tap-highlight" content="no"/><script>var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?1d0db9c3c2c6dc7d78ff8eac0ea41f6f";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();</script><link rel="stylesheet" href="/css/base.css"/><link rel="stylesheet" href="/css/photo.css"/></head><body><h1 class="blog-logo"><a href="/" title="Home"><img src="/img/logo.png"/></a></h1><nav id="blog-header-nav"><ul class="nav-list"><li><a href="/list/1" class="nav-item hover-lighten" title="posts">Posts</a></li><li><a href="/photography" class="nav-item hover-lighten" title="photography">Photography</a></li><li><a href="/about" class="nav-item hover-lighten" title="about">About</a></li></ul></nav><div class="main-wrapper"><main id="main"><div class="asset" data-id="0"><p class="loading"><span class="one">.</span>
+<span class="two">.</span>
+<span class="three">.</span></p><div class="photo"><img src="/photography/2014/猫/01.jpg"/></div></div><div class="asset" data-id="1"><p class="loading"><span class="one">.</span>
+<span class="two">.</span>
+<span class="three">.</span></p><div class="photo"><img src="/photography/2014/猫/02.jpg"/></div></div><div class="asset" data-id="2"><p class="loading"><span class="one">.</span>
+<span class="two">.</span>
+<span class="three">.</span></p><div class="photo"><img src="/photography/2014/猫/03.jpg"/></div></div><div class="asset" data-id="3"><p class="loading"><span class="one">.</span>
+<span class="two">.</span>
+<span class="three">.</span></p><div class="photo"><img src="/photography/2014/猫/04.jpg"/></div></div><div class="asset" data-id="4"><p class="loading"><span class="one">.</span>
+<span class="two">.</span>
+<span class="three">.</span></p><div class="photo"><img src="/photography/2014/猫/05.jpg"/></div></div><div class="asset" data-id="5"><p class="loading"><span class="one">.</span>
+<span class="two">.</span>
+<span class="three">.</span></p><div class="photo"><img src="/photography/2014/猫/06.jpg"/></div></div><div class="asset" data-id="6"><p class="loading"><span class="one">.</span>
+<span class="two">.</span>
+<span class="three">.</span></p><div class="photo"><img src="/photography/2014/猫/07.jpg"/></div></div><div class="asset" data-id="7"><p class="loading"><span class="one">.</span>
+<span class="two">.</span>
+<span class="three">.</span></p><div class="photo"><img src="/photography/2014/猫/08.jpg"/></div></div><div class="asset" data-id="8"><p class="loading"><span class="one">.</span>
+<span class="two">.</span>
+<span class="three">.</span></p><div class="photo"><img src="/photography/2014/猫/09.jpg"/></div></div><div class="asset" data-id="9"><p class="loading"><span class="one">.</span>
+<span class="two">.</span>
+<span class="three">.</span></p><div class="photo"><img src="/photography/2014/猫/10.jpg"/></div></div><div class="asset" data-id="10"><p class="loading"><span class="one">.</span>
+<span class="two">.</span>
+<span class="three">.</span></p><div class="photo"><img src="/photography/2014/猫/11.jpg"/></div></div><div class="asset" data-id="11"><p class="loading"><span class="one">.</span>
+<span class="two">.</span>
+<span class="three">.</span></p><div class="photo"><img src="/photography/2014/猫/12.jpg"/></div></div><div class="asset" data-id="12"><p class="loading"><span class="one">.</span>
+<span class="two">.</span>
+<span class="three">.</span></p><div class="photo"><img src="/photography/2014/猫/13.jpg"/></div></div></main><footer id="home-footer">.copyright © 2015 by Tianqi</footer></div><script>var images = document.querySelectorAll(".photo img")
+images.forEach(function(image){
+    image.onload = function() {
+        this.style.opacity = 1
+        this.parentElement.previousElementSibling.remove()
+    }
+})
+
+var cur = 1
+var assets = document.querySelectorAll(".asset")
+var photos = document.querySelectorAll(".photo")
+var H = window.innerHeight
+
+assets[0].style.top = "0px"
+assets[1].style.top = H+"px"
+photos[0].style.top = "0px"
+photos[1].style.top = -H+"px"
+
+window.onmousewheel = function(e) {
+    var top = parseInt(assets[cur].style.top)
+    if (e.deltaY > 0) { // 上滑
+        if(top - e.deltaY <= 0) {
+            assets[cur].style.top = "0px"
+            photos[cur].style.top = "0px"
+            if(cur != assets.length-1) {
+                cur++
+                assets[cur].style.top = H+"px"
+                photos[cur].style.top = -H+"px"
+            }
+        } else {
+            assets[cur].style.top = (top - e.deltaY) + "px"
+            photos[cur].style.top = (e.deltaY - top)+"px"
+        }
+    } else {
+        if(top + e.deltaY >= H) {
+            assets[cur].style.top = H+"px"
+            photos[cur].style.top = -H+"px"
+            if(cur > 1) {
+                cur--
+                assets[cur].style.top = "0px"
+                photos[cur].style.top = "0px"
+            }
+        } else {
+            assets[cur].style.top = (top - e.deltaY) + "px"
+            photos[cur].style.top = (e.deltaY - top)+"px"
+        }
+    }
+}</script></body></html>
