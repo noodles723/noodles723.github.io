@@ -18,12 +18,11 @@ block main
 							include ./disqus.js
 
 		footer.post-content-footer(flex-row)
-			if next
-				a.next(href="/posts/" + next)
-					label Next
-					p= next
 			if prev
 				a.prev(href="/posts/" + prev)
 					label Prev
-					p= prev
-
+					p= prev.split("/")[1]
+			if next
+				a.next(href="/posts/" + next)
+					label Next
+					p= next.split("/")[1]

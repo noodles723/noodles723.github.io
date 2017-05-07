@@ -9,6 +9,8 @@ var renderAlbum = require("./_album");
 var renderStylus = require("./_stylus");
 // 渲染post
 var renderPost = require("./_post");
+// 渲染post list
+var renderList = require("./_list")
 
 yargs
 	.usage('$0 <cmd> [args]')
@@ -16,5 +18,6 @@ yargs
 	.command("stylus [file]", "complie stylus to css", {}, renderStylus)
 	.command("album [folder]", "render album html page", {}, renderAlbum)
 	.command("post [folder]", "render post page", {}, renderPost)
+	.command("list", "render post list page", {}, renderList)
 	.help()
 	.argv
