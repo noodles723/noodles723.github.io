@@ -13,7 +13,7 @@ if(!argv.m) {
 		let n = Math.floor(Math.random()*1000);
 		let poem = data[n];
 		let p = Math.floor(Math.random()*poem.paragraphs.length);
-		let message = poem.paragraphs[p];
+		let message = poem.paragraphs[p]+"____by_"+poem.author;
 		var code = shell.exec("git add . && git commit -m "+message+" && git push origin master").code;
 		if(code !== 0) {
 			shell.echo('Error: Git commit failed');

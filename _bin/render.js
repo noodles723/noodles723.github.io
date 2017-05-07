@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const yargs = require("yargs").argv;
+const yargs = require("yargs");
 
 // 渲染html
 var renderPage = require("./_page");

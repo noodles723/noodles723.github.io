@@ -14,6 +14,8 @@ var marked = require('marked').setOptions({
     smartypants: true
 });
 
+const cacheFile = path.join(BASE, "listCache.json");
+
 var renderListPage = function(folder, outDir, prev, next) {
 
 };
@@ -27,5 +29,8 @@ module.exports = function(argv) {
     }
 
     var folders = glob.sync(path.join(BASE, "_posts", "*", "*")).sort();
-
+    if(fs.existsSync(cacheFile)) {
+        var cache = JSON.parse(fs.readFileSync(cacheFile))
+        console.log(cache)
+    }
 };
