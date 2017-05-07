@@ -61,7 +61,10 @@ module.exports = function(argv) {
 		return;
 	}
 
-	var allFolders = glob.sync(path.join(BASE, "_posts", "*", "*")).sort();
+	var allFolders = glob.sync([
+		path.join(BASE, "_posts", "*", "*"),
+		"!"+path.join(BASE, "_posts", "**", ".*")
+	]).sort();
 	if(typeof(argv.folder) === "number") { // 渲染年
 		var folders = allFolders.filter(f => f.match("_posts/"+argv.folder.toString()) );
 		var firstIndex = allFolders.indexOf(folders[0]);

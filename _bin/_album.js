@@ -15,7 +15,7 @@ const fs = require("fs");
 // 压缩所有照片及cover
 var renderPhotos = function(folder, outDir) {
 	// 将所有图片压缩
-	return imagemin([path.join(folder, "*.{jpg, jpeg}")], outDir, {
+	imagemin([path.join(folder, "*.{jpg, jpeg}")], outDir, {
 		plugins: [
 			imageminJpegRecompress()
 		]
@@ -51,11 +51,17 @@ var renderPhotoPage = function(folder, outDir) {
 // 渲染相册列表页
 var renderAlbumListPage = function() {
 	var base = path.join(BASE, "_photography");
-	var years = fs.readdirSync(base).sort().reverse();
+	var years = glob.sync([
+		path.join(base, "*"),
+		"!"+path.join(base, ".*")
+	]).sort().reverse();
 	var albumObj = {};
 
 	years.forEach(year => {
-		var list = fs.readdirSync(path.join(base, year));
+		var list = glob.sync([
+			path.join(base, year, "*"),
+			"!"+path.join(base, year, ".*")
+		]).sort();
 		if(list && list.length)
 			albumObj[year] = list;
 	});
@@ -77,24 +83,25 @@ module.exports = function(argv) {
 		return;
 	}
 
+	var folders = glob.sync([
+		path.join(BASE, "_photography", "*", "*"),
+		"!"+path.join(BASE, "_photography", "**", ".*")
+	]).sort();
 	if(argv.folder) { // 渲染一个相册
-		if(!path.dirname(argv.folder).match(/^\d+$/)) { // 没有年份的话默认加上今年
-			argv.folder = path.join((new Date()).getFullYear(), argv.folder);
-		}
-		var folder = path.join(BASE, "_photography", argv.folder);
-		var outDir = path.join(BASE, "photography", argv.folder);
+		var folder = folders.filter(f => f.indexOf(argv.folder)>0)[0];
+		var outDir = folder.replace("_photography", "photography");
 		if(!fs.existsSync(folder)) {
 			console.log("folder not exists");
 			return
-		} else {
-			del(outDir).then(() => {
-				renderPhotos(folder, outDir);
-				renderPhotoPage(folder, outDir);
-				renderAlbumListPage();
-			});
 		}
+		del(outDir).then(() => {
+			renderPhotos(folder, outDir);
+			renderPhotoPage(folder, outDir);
+			renderAlbumListPage();
+		});
+
 	} else if(argv.A) { // 渲染所有相册
-		var folders = glob.sync([path.join(BASE, "_photography", "*", "*")]);
+
 		del(path.join(BASE, "photography")).then(() => {
 			folders.forEach(folder => {
 				var outDir = folder.replace("_photography", "photography");

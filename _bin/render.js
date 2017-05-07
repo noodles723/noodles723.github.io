@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const yargs = require("yargs");
+const yargs = require("yargs").argv;
 
 // 渲染html
 var renderPage = require("./_page");
@@ -10,14 +10,13 @@ var renderStylus = require("./_stylus");
 // 渲染post
 var renderPost = require("./_post");
 // 渲染post list
-var renderList = require("./_list")
+var renderList = require("./_list");
 
-yargs
-	.usage('$0 <cmd> [args]')
+yargs.usage('$0 <cmd> [args]')
+	.help()
 	.command('page [folder]', 'render default html page', {}, renderPage)
 	.command("stylus [file]", "complie stylus to css", {}, renderStylus)
 	.command("album [folder]", "render album html page", {}, renderAlbum)
 	.command("post [folder]", "render post page", {}, renderPost)
 	.command("list", "render post list page", {}, renderList)
-	.help()
-	.argv
+
