@@ -1,5 +1,4 @@
 ---
-createtime: "2017-04-20"
 category: ["前端"]
 keywords: ["angular"]
 ---
@@ -57,7 +56,7 @@ node_modules/.bin/ngc -p tsconfig-aot.json     // mac, linux
 
 `-p`参数是选择tsconfig.json文件的地址，或包含tsconfig.json的文件夹的地址。
 
-ngc会把文件编译到genDir的aot文件夹下，类似`aot/app.component.ngfactory.ts`.
+ngc会把文件编译到genDir的aot文件夹下，类似 `aot/app.component.ngfactory.ts`.
 
 ## 构建
 编译之后，构建方式也得稍作修改，因为我们不再直接用component.ts了，改为ngfactory.ts了，所以在main.ts里需要将`platformBrowserDynamic.bootstrap`换成`platformBrowser().bootstrapModuleFactory`，入参是生成的ngfactory文件。

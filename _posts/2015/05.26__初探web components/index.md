@@ -19,7 +19,7 @@ cover: ""
 
 比如上面这个`video`标签，将`chrome develop tool->settings->general->elements->show user agent shadow DOM`钩上，然后就可以看见下面这一大坨:
 
-![](./2015-5-26-videotag.png)
+![](2015-5-26-videotag.png)
 
 同里我们可以自己来定做一个`<img-slider>`标签
 
@@ -267,10 +267,10 @@ margin-left: 10px;}
 <div id="slider"><input checked="" type="radio" name="slider" id="slide1" selected="false"><input type="radio" name="slider" id="slide2" selected="false"><input type="radio" name="slider" id="slide3" selected="false"><input type="radio" name="slider" id="slide4" selected="false"><div id="slides"><div id="overflow"><div class="inner"><content select="img"></content></div> <!-- .inner --></div> <!-- #overflow --></div><label for="slide1"></label><label for="slide2"></label><label for="slide3"></label><label for="slide4"></label></div>
 </template>
 <img-slider>
-<img src="./2015-05-26-rock.jpg" alt="an interesting rock">
-<img src="./2015-05-26-grooves.jpg" alt="some neat grooves">
-<img src="./2015-05-26-arch.jpg" alt="a rock arch">
-<img src="./2015-05-26-sunset.jpg" alt="a dramatic sunset">
+<img src="2015-05-26-rock.jpg" alt="an interesting rock">
+<img src="2015-05-26-grooves.jpg" alt="some neat grooves">
+<img src="2015-05-26-arch.jpg" alt="a rock arch">
+<img src="2015-05-26-sunset.jpg" alt="a dramatic sunset">
 </img-slider>
 <script>
   var tmpl = document.querySelector('template');

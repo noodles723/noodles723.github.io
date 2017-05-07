@@ -96,9 +96,13 @@ typo-base()
 typo-article()
   line-height: 2.0
   font-family: $SerifFont
+  word-break: break-all
   hyphens(auto)
   p, pre, ul, ol, li, blockquote, table
     margin-bottom: 1em
+    letter-spacing: 1px
+  pre, code
+    font-size: .9em
   a
     font-family: $ItalicFont
     position: relative
@@ -116,8 +120,7 @@ typo-article()
 
   for i in 1..6
     h{i}
-      margin-bottom: 0.23em
-      margin-top: 1.23em
+      margin: 0.23em 0px
       font-weight: $bolderWeight
       font-size: i*(-0.3em)+2.5
       a

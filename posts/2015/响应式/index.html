@@ -1,0 +1,121 @@
+<html><head><title></title><meta name="keywords"/><meta name="description"/><meta charset="UTF-8"/><meta name="renderer" content="webkit"/><meta name="referrer" content="always"/><meta name="googlebot" content="NOODP"/><meta name="viewport" content="width=device-width,initial-scale=1.0,height=device-height,user-scalable=no,minimum-scale=1.0,maximum-scale=1.0"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="apple-mobile-web-app-status-bar-style" content="black"/><meta name="format-detection" content="telephone=no, email=no"/><meta name="robots" content="index,follow"/><meta http-equiv="Cache-Control" content="no-siteapp"/><meta name="renderer" content="webkit"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="HandheldFriendly" content="true"/><meta name="MobileOptimized" content="320"/><meta name="screen-orientation" content="portrait"/><meta name="x5-orientation" content="portrait"/><meta name="full-screen" content="yes"/><meta name="x5-fullscreen" content="true"/><meta name="browsermode" content="application"/><meta name="x5-page-mode" content="app"/><meta name="msapplication-tap-highlight" content="no"/><script>var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?1d0db9c3c2c6dc7d78ff8eac0ea41f6f";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();</script><link rel="stylesheet" href="/css/base.css"/><link rel="stylesheet" href="/css/post.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/github.min.css"/></head><body><h1 class="blog-logo"><a href="/" title="Home"><img src="/img/logo.png"/></a></h1><nav id="blog-header-nav"><ul class="nav-list"><li><a href="/list/1" class="nav-item hover-lighten" title="posts">Posts</a></li><li><a href="/photography" class="nav-item hover-lighten" title="photography">Photography</a></li><li><a href="/about" class="nav-item hover-lighten" title="about">About</a></li></ul></nav><div class="main-wrapper"><main id="main"><article id="post-content"><header class="post-content-header"><h1>响应式</h1><span class="date">2015.05.29</span></header><div class="post-content-body"><div class="article-content"><blockquote>
+<p>响应式是针对任意设备对<strong>网页内容</strong>进行完美布局的一种显示机制，手机版网站是根据<strong>不同设备</strong>提供特定的内容和功能，两者要加以区分。</p>
+</blockquote>
+<p>我理解如果时间和经费允许，最好还是根据设备定制，响应式只是一个在固定宽度和完全定制之间的折中方案，提供一种无歧视的用户体验。</p>
+<h3 id="-">媒体查询：支持不同的视口</h3>
+<h4 id="-">媒体查询语法</h4>
+<p>可以写在.css文件里</p>
+<pre><code>@<span class="hljs-keyword">media</span> screen and (max-width: <span class="hljs-number">960px</span>) {
+    <span class="hljs-selector-tag">body</span> {
+        <span class="hljs-attribute">background-color</span>: red;
+    }
+}
+</code></pre><p>也可以使用链接</p>
+<pre><code>&lt;link <span class="hljs-attr">rel="stylesheet"</span> <span class="hljs-attr">media="screen</span> <span class="hljs-literal">and</span> (orientation: portrait) <span class="hljs-literal">and</span> (min-width:<span class="hljs-number">800</span>px), projection<span class="hljs-string">" href="</span>xxx.css<span class="hljs-string">" /&gt;</span>
+</code></pre><p>或者在.css里用链接</p>
+<pre><code>@<span class="hljs-keyword">import</span> url(<span class="hljs-string">"xxx.css"</span>) screen <span class="hljs-keyword">and</span> (<span class="hljs-built_in">min</span>-<span class="hljs-built_in">width</span>: <span class="hljs-number">200</span>px);
+</code></pre><p>常用的属性有：</p>
+<ul>
+<li>width：视口宽度</li>
+<li>height：视口高度</li>
+<li>device-width：设备屏幕宽度</li>
+<li>device-height：设备屏幕高度</li>
+<li>orientation: 方向</li>
+<li>aspect-ratio/device-aspect-ratio: 宽高比</li>
+<li>resolution：分辨率300dpi之类的</li>
+</ul>
+<h4 id="-">阻止浏览器自动调整页面大小</h4>
+<p>主要方法是在<code>&lt;head&gt;</code>里添加一个<code>&lt;meta&gt;</code>标签来控制缩放范围，是否可以缩放等</p>
+<pre><code>&lt;meta <span class="hljs-attr">name="viewport"</span> <span class="hljs-attr">content="initial-scale=1.0,</span> <span class="hljs-attr">width=device-width,</span> <span class="hljs-attr">maximum-scale=3,</span> <span class="hljs-attr">minimum-scale=0.5,</span> <span class="hljs-attr">user-scalable=no"/&gt;</span>
+</code></pre><p>之后应该可以直接在css里用<code>@viewport</code>来声明，详见<a href="http://dev.w3.org/csswg/css-device-adapt/">这里</a></p>
+<h3 id="-">流式布局</h3>
+<p>响应式设计的核心：</p>
+<ul>
+<li>使用百分比布局创建流动的弹性界面</li>
+<li>使用媒体查询来限制元素的变动范围</li>
+</ul>
+<blockquote>
+<p>百分比宽度 ＝ 目标元素宽度 / 上下文元素宽度</p>
+</blockquote>
+<p>用<code>em</code>替换<code>px</code>，现代浏览器默认文字大小都是<strong>16px</strong>，所以给<code>body</code>添加：</p>
+<pre><code>font-<span class="hljs-built_in">size</span>: <span class="hljs-number">100</span><span class="hljs-comment">%</span>
+font-<span class="hljs-built_in">size</span>: <span class="hljs-number">16</span>px
+font-<span class="hljs-built_in">size</span>: <span class="hljs-number">1</span>em
+</code></pre><p>效果一样。</p>
+<p>对于图片等多媒体标签，可以使用</p>
+<pre><code><span class="hljs-selector-tag">img</span>, <span class="hljs-selector-tag">object</span>, <span class="hljs-selector-tag">video</span>, embed {
+    <span class="hljs-attribute">max-width</span>: <span class="hljs-number">100%</span>;
+}
+</code></pre><p>来使其自动缩放到与容器100%匹配。</p>
+<p>还可以考虑用<strong>网格系统</strong>来实现快速响应式建站。</p>
+<h3 id="-html5">响应式设计中的html5</h3>
+<h4 id="polyfill">polyfill</h4>
+<blockquote>
+<p>腻子脚本(polyfill)是指一段能给老版本浏览器带来新特性的js代码，以此填补其缺陷。</p>
+</blockquote>
+<p>使用<a href="http://www.modernizr.com">Modernizr</a>可以基本解决所有polyfill的问题，让IE也可以用html5。</p>
+<p>一些html5常用的标签: <code>&lt;section&gt;, &lt;nav&gt;, &lt;article&gt;, &lt;aside&gt;, &lt;hgroup&gt;, &lt;header&gt;, &lt;footer&gt;, &lt;address&gt;</code></p>
+<h4 id="-">离线应用</h4>
+<p>为每个需要离线使用的网页制定一个<code>.manifest</code>文件罗列所需所有资源</p>
+<pre><code>&lt;<span class="hljs-selector-tag">html</span> lang=<span class="hljs-string">"zh"</span> manifest=<span class="hljs-string">"/offline.manifest"</span>&gt;
+</code></pre><p>文件内容如下：</p>
+<pre><code>CACHE MANIFEST
+<span class="hljs-meta">#v1</span>
+<span class="hljs-symbol">
+CACHE:</span>       <span class="hljs-comment">//所有离线使用所需文件</span>
+index.html
+css/main.css
+img/xxx.png
+<span class="hljs-symbol">
+NETWORK:</span>     <span class="hljs-comment">//所有不需要被缓存的文件</span>
+*            <span class="hljs-comment">//在线白名单通配，及时更新</span>
+<span class="hljs-symbol">
+FALLBACK:</span>    <span class="hljs-comment">//每次询问缓存是否有，没有则显示offline.html</span>
+<span class="hljs-comment">//offline.html</span>
+</code></pre><p>修改版本号可出发浏览器更新缓存</p>
+<p>完整规范见<a href="http://www.w3.org/html/wg/drafts/html/master/browsers.html#offline">这里</a></p>
+<h4 id="-font-face">@font-face</h4>
+<p>Embedded OpenType(EOT)只有IE支持，其他浏览器一般常用TrueType(TTF), Scalable Vector Graphics(SVG)以及Web Open Font Format(WOFF)</p>
+<p>免费的西文字体可以去<a href="http://www.fontsquirrel.com">Font Squirrel</a>找。</p>
+<p>使用@font-face，css语法如下</p>
+<pre><code><span class="hljs-keyword">@font-face</span> {
+    <span class="hljs-attribute">font-family</span>: <span class="hljs-string">'BebasNeueRegular'</span>;
+    <span class="hljs-attribute">src</span>: url(<span class="hljs-string">'BebasNeue-webfont.eot'</span>);
+    <span class="hljs-attribute">src</span>: url(<span class="hljs-string">'BebasNeue-webfont.eot?#iefix'</span>) format(<span class="hljs-string">'embedded-opentype'</span>),
+         url(<span class="hljs-string">'BebasNeue-webfont.woff'</span>) format(<span class="hljs-string">'woff'</span>),
+         url(<span class="hljs-string">'BebasNeue-webfont.ttf'</span>) format(<span class="hljs-string">'truetype'</span>),
+         url(<span class="hljs-string">'BebasNeue-webfont.svg#BebasNeueRegular'</span>) format(<span class="hljs-string">'svg'</span>),
+    <span class="hljs-attribute">font-weight</span>: normal; <span class="hljs-comment">//默认是700</span>
+    <span class="hljs-attribute">font-style</span>: normal;
+}
+</code></pre><p>然后就可以在其他css里使用<code>font-family: BebasNeueRegular</code>了。</p>
+<p>@font-face还可以用作图标，而且因为是字体，图标都可以完美缩放，</p>
+<h3 id="-">跨浏览器</h3>
+<p>瑞士军刀还是 <a href="http://www.modernizr.com/">Modernizr</a></p>
+<p>还有<a href="https://github.com/scottjehl/Respond">Respond.js</a>，可以让IE支持<code>min/max-width</code>从而实现响应式。</p>
+<pre><code>&lt;!--[<span class="hljs-keyword">if</span> lte IE <span class="hljs-number">8</span>]&gt;
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"js/respond.js"</span> /&gt;</span><span class="handlebars"><span class="xml">
+<span class="hljs-tag">&lt;<span class="hljs-name">![endif]</span>&gt;</span></span></span></span>
+</code></pre><h3 id="-">其他资源</h3>
+<ul>
+<li><a href="http://mediaqueri.es">响应式设计创意收集：mediaqueri.es</a></li>
+<li><a href="http://www.caniuse.com">检测浏览器对css3和html5的支持性: caniuse.com</a></li>
+<li><a href="http://www.colorzilla.com/gradient-editor/">css3渐变生成器</a></li>
+<li><a href="http://lea.verou.me/css3patterns/">css3背景渐变图案</a></li>
+</ul>
+</div><footer><div class="comments-section"><div id="disqus_thread"><script>/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = 'tianqi'; // required: replace example with your forum shortname
+
+/* * * DON'T EDIT BELOW THIS LINE * * */
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script></div></div></footer></div><footer class="post-content-footer" flex-row="flex-row"><a class="next" href="/posts/ECMAScript 6(ES2015)小记"><label>Next</label><p>ECMAScript 6(ES2015)小记</p></a><a class="prev" href="/posts/初探web components"><label>Prev</label><p>初探web components</p></a></footer></article></main><footer id="home-footer">.copyright © 2015 by Tianqi</footer></div></body></html>

@@ -15,6 +15,6 @@ yargs
 	.command('page [folder]', 'render default html page', {}, renderPage)
 	.command("stylus [file]", "complie stylus to css", {}, renderStylus)
 	.command("album [folder]", "render album html page", {}, renderAlbum)
-	.command("post [file]", "render post page", {}, renderPost)
+	.command("post [folder]", "render post page", {}, renderPost)
 	.help()
 	.argv

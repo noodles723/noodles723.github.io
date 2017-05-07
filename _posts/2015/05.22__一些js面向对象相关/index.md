@@ -7,7 +7,6 @@ keywords: ["js"]
 cover: ""
 ---
 
-
 <span class="dropcap">关</span>于js的一些类，模块和闭包的用法，觉得比较有用，纪录一下
 ### 闭包和模块
 #### 匿名闭包 anonymous closures

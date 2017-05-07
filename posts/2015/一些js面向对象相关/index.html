@@ -1,0 +1,167 @@
+<html><head><title></title><meta name="keywords"/><meta name="description"/><meta charset="UTF-8"/><meta name="renderer" content="webkit"/><meta name="referrer" content="always"/><meta name="googlebot" content="NOODP"/><meta name="viewport" content="width=device-width,initial-scale=1.0,height=device-height,user-scalable=no,minimum-scale=1.0,maximum-scale=1.0"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="apple-mobile-web-app-status-bar-style" content="black"/><meta name="format-detection" content="telephone=no, email=no"/><meta name="robots" content="index,follow"/><meta http-equiv="Cache-Control" content="no-siteapp"/><meta name="renderer" content="webkit"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="HandheldFriendly" content="true"/><meta name="MobileOptimized" content="320"/><meta name="screen-orientation" content="portrait"/><meta name="x5-orientation" content="portrait"/><meta name="full-screen" content="yes"/><meta name="x5-fullscreen" content="true"/><meta name="browsermode" content="application"/><meta name="x5-page-mode" content="app"/><meta name="msapplication-tap-highlight" content="no"/><script>var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?1d0db9c3c2c6dc7d78ff8eac0ea41f6f";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();</script><link rel="stylesheet" href="/css/base.css"/><link rel="stylesheet" href="/css/post.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/github.min.css"/></head><body><h1 class="blog-logo"><a href="/" title="Home"><img src="/img/logo.png"/></a></h1><nav id="blog-header-nav"><ul class="nav-list"><li><a href="/list/1" class="nav-item hover-lighten" title="posts">Posts</a></li><li><a href="/photography" class="nav-item hover-lighten" title="photography">Photography</a></li><li><a href="/about" class="nav-item hover-lighten" title="about">About</a></li></ul></nav><div class="main-wrapper"><main id="main"><article id="post-content"><header class="post-content-header"><h1>一些js面向对象相关</h1><span class="date">2015.05.22</span></header><div class="post-content-body"><div class="article-content"><p><span class="dropcap">关</span>于js的一些类，模块和闭包的用法，觉得比较有用，纪录一下</p>
+<h3 id="-">闭包和模块</h3>
+<h4 id="-anonymous-closures">匿名闭包 anonymous closures</h4>
+<p>创建一个匿名函数然后立即执行，即生成了一个闭包，函数里所有代码的作用域不会超出这个闭包。</p>
+<pre><code class="lang-javascript">(<span class="hljs-name">function</span> (){
+    // 私有域
+}())<span class="hljs-comment">;</span>
+</code></pre>
+<h4 id="-global-import">全局引入 global import</h4>
+<p>当碰到一个变量名时，解释器会顺着作用域链去找它的<code>var</code>定义，如果没有找到，则默认是<code>global</code>的。</p>
+<p>可将全局变量以入参的形式引入到匿名函数中。</p>
+<pre><code class="lang-javascript">(<span class="hljs-name">function</span>($, YAHOO){
+    // now have access to globals jQuery as $ and YAHOO in this code
+}(<span class="hljs-name">jQuery</span>, YAHOO))<span class="hljs-comment">;</span>
+</code></pre>
+<h4 id="-module-export">模块导出 module export</h4>
+<p>用匿名函数的返回值来定义模块</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> MODULE = (<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-keyword">var</span> my = {},
+           privateVariable = <span class="hljs-number">1</span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">privateMethod</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-comment">// ...</span>
+    }
+
+    my.moduleProperty = <span class="hljs-number">1</span>;
+    my.moduleMethod = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+        <span class="hljs-comment">// ...</span>
+    };
+
+    <span class="hljs-keyword">return</span> my;
+}());
+</code></pre>
+<h4 id="augmentation">Augmentation</h4>
+<p>用先导入，然后增加属性，再导出的方法来拓展模块(<code>augment modules</code>)</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> MODULE = (<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(my)</span></span>{
+    my.anotherMethod = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{
+        <span class="hljs-comment">// add method ...</span>
+    };
+
+    <span class="hljs-keyword">return</span> my;
+}(MODULE));
+</code></pre>
+<h4 id="loose-augmentation">Loose Augmentation</h4>
+<p>上述方法得保证MODULE有一个初始值，可用以下方法改进：</p>
+<pre><code class="lang-javascript">var MODULE = (<span class="hljs-name">function</span>(<span class="hljs-name">my</span>){
+    // add capabilities ...
+
+        return my<span class="hljs-comment">;</span>
+}(<span class="hljs-name">MODULE</span> || {}))<span class="hljs-comment">;</span>
+</code></pre>
+<h3 id="-">面向对象</h3>
+<h4 id="-new-object-create">关于new和Object.create</h4>
+<p>一般用<code>new</code>使构造函数实例化，例如：</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Vehicle = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Vehicle</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-comment">// ...</span>
+}
+<span class="hljs-keyword">var</span> vehicle = <span class="hljs-keyword">new</span> Vehicle();
+</code></pre>
+<p>当<code>new Vehicle()</code>被执行时发生了以下四件事：</p>
+<ol>
+<li><code>var vehicle = function(){}</code>新建一个对象</li>
+<li><code>vehicle.constructor = Vehicle</code>设置构造函数</li>
+<li><code>vehicle.__proto__ = Vehicle.prototype</code>设置原型对象</li>
+<li><code>Vehicle.call(vehicle)</code>在vehicle的作用域内运行Vehicle()</li>
+</ol>
+<p><strong><strong>proto</strong></strong>是一个仅存在于实例与原型间的指针</p>
+<p><code>Object.create</code>主要是想借助已有的对象创建新对象，同时不必因此创建自定义类型</p>
+<pre><code class="lang-javascript"><span class="hljs-built_in">Object</span>.create = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">o</span>) </span>{
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">F</span>(<span class="hljs-params"></span>)</span>{}
+    F.prototype = o;
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> F();
+};
+</code></pre>
+<h4 id="-">有关继承</h4>
+<p>组合继承，也叫经典继承</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Super</span><span class="hljs-params">(name)</span> </span>{
+    <span class="hljs-keyword">this</span>.name = name;
+    <span class="hljs-keyword">this</span>.color = <span class="hljs-string">'red'</span>;
+}
+Super.prototype.say = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{
+    alert(<span class="hljs-keyword">this</span>.name);
+};
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Sub</span><span class="hljs-params">(name, age)</span> </span>{
+    Super.call(<span class="hljs-keyword">this</span>, name); <span class="hljs-comment">//继承属性</span>
+    <span class="hljs-keyword">this</span>.age = age;
+}
+Sub.prototype = <span class="hljs-keyword">new</span> Super(); <span class="hljs-comment">//继承方法</span>
+<span class="hljs-keyword">var</span> instance = <span class="hljs-keyword">new</span> Sub(<span class="hljs-string">'wang'</span>, <span class="hljs-number">23</span>); <span class="hljs-comment">//实例化</span>
+</code></pre>
+<p>则<code>instance</code>里有<code>name,age,color</code>私有变量，也可以调用公共函数<code>say</code>
+但是<code>Sub.prototype</code>里也会继承到变量<code>name</code>和<code>color</code>且没什么用，在instance实例化的时候被覆盖了，不过可以用寄生组合式继承来解决这个冗余。
+想法是原型继承原型，变量继承变量。</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">inheritPrototype</span>(<span class="hljs-params">Sub, Super</span>) </span>{
+    <span class="hljs-keyword">var</span> proto = <span class="hljs-built_in">Object</span>.create(Super.prototype); <span class="hljs-comment">//继承原型</span>
+    proto.constructor = Sub;
+    Sub.prototype = proto;
+}
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Super</span>(<span class="hljs-params">name</span>) </span>{
+    <span class="hljs-keyword">this</span>.name = name;
+    <span class="hljs-keyword">this</span>.color = <span class="hljs-string">'red'</span>;
+}
+Super.prototype.say = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+    alert(<span class="hljs-keyword">this</span>.name);
+};
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Sub</span>(<span class="hljs-params">name, age</span>) </span>{
+    Super.call(<span class="hljs-keyword">this</span>, name); <span class="hljs-comment">//继承属性</span>
+    <span class="hljs-keyword">this</span>.age = age;
+}
+inheritPrototype(Sub, Super);
+<span class="hljs-keyword">var</span> instance = <span class="hljs-keyword">new</span> Sub(<span class="hljs-string">'wang'</span>, <span class="hljs-number">23</span>); <span class="hljs-comment">//实例化</span>
+</code></pre>
+<h3 id="-">函数表达式</h3>
+<h4 id="-">递归</h4>
+<p>一个阶乘函数一般写法为</p>
+<pre><code class="lang-javascript">function <span class="hljs-built_in">factorial</span>(<span class="hljs-built_in">num</span>) {
+    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">num</span> &lt;= <span class="hljs-number">1</span>)
+        <span class="hljs-built_in">return</span> <span class="hljs-number">1</span>;
+    <span class="hljs-keyword">else</span>
+        <span class="hljs-built_in">return</span> <span class="hljs-built_in">num</span> * <span class="hljs-built_in">factorial</span>(<span class="hljs-built_in">num</span> - <span class="hljs-number">1</span>);
+}
+</code></pre>
+<p>当factorial被无意中改动时很容易出错，可将最后的<code>factorial(num-1)</code>改为<code>arguments.callee(num-1)</code>确保正确调用，但在严格模式下<code>arguments.callee</code>不能被访问，所以最优写法应该是：</p>
+<pre><code class="lang-javascript"><span class="hljs-built_in">var</span> <span class="hljs-built_in">factorial</span> = (function f(<span class="hljs-built_in">num</span>) {
+    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">num</span> &lt;= <span class="hljs-number">1</span>)
+        <span class="hljs-built_in">return</span> <span class="hljs-number">1</span>;
+    <span class="hljs-keyword">else</span>
+        <span class="hljs-built_in">return</span> <span class="hljs-built_in">num</span> * f(<span class="hljs-built_in">num</span> - <span class="hljs-number">1</span>);
+});
+</code></pre>
+<h4 id="-">闭包的一些注意点</h4>
+<p><em>闭包</em>是指有权访问另一个函数作用域中的变量的函数
+由于闭包所保存的是整个变量对象，所以只能取得变量的最后一个值，当变量为循环对象时需注意</p>
+<p>闭包有可能造成内存泄漏</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">assignHandler</span>(<span class="hljs-params"></span>)</span>{
+    <span class="hljs-keyword">var</span> element = <span class="hljs-built_in">document</span>.getElementById(someid);
+    element.onclick = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        alert(element.id);
+    };
+}
+</code></pre>
+<p>则<code>element</code>一直在被onclick引用，内存不会被回收，应改为：</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">assignHandler</span>(<span class="hljs-params"></span>)</span>{
+    <span class="hljs-keyword">var</span> element = <span class="hljs-built_in">document</span>.getElementById(someid);
+    <span class="hljs-keyword">var</span> id = element.id;
+    element.onclick = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        alert(id);
+    };
+    element = <span class="hljs-literal">null</span>;
+}
+</code></pre>
+</div><footer><div class="comments-section"><div id="disqus_thread"><script>/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = 'tianqi'; // required: replace example with your forum shortname
+
+/* * * DON'T EDIT BELOW THIS LINE * * */
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script></div></div></footer></div><footer class="post-content-footer" flex-row="flex-row"><a class="next" href="/posts/初探web components"><label>Next</label><p>初探web components</p></a><a class="prev" href="/posts/有关CSS3 box和column"><label>Prev</label><p>有关CSS3 box和column</p></a></footer></article></main><footer id="home-footer">.copyright © 2015 by Tianqi</footer></div></body></html>

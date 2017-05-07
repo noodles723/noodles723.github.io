@@ -2,7 +2,7 @@ extends ../common/layout.pug
 
 block extra-head
 	link(rel="stylesheet", href="/css/post.css")
-	link(rel="stylesheet", href="/css/libs/hljs-github.css")
+	link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/github.min.css")
 
 block main
 	article#post-content
@@ -10,24 +10,20 @@ block main
 			h1= post.title
 			span.date= post.createtime
 		.post-content-body
-			.article-content= post.content
+			.article-content!= post.__content
 			footer
 				.comments-section
 					#disqus_thread
 						script
 							include ./disqus.js
 
-		footer.post-content-footer
-			if prev
-				.row-half.prev
-					a.post-switcher(href="/posts/#{prev}")
-						label Prev
-						h4.title
-							span= prev
+		footer.post-content-footer(flex-row)
 			if next
-				.row-half.next
-					a.post-switcher(href="/posts/#{next}")
-						label Next
-						h4.title
-							span= next
+				a.next(href="/posts/" + next)
+					label Next
+					p= next
+			if prev
+				a.prev(href="/posts/" + prev)
+					label Prev
+					p= prev
 
