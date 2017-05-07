@@ -4,15 +4,16 @@
   "description": "blog",
   "main": "index.js",
   "scripts": {
-    "stylus": "exec(stylus -c _layout/_stylus/*.styl -o css)",
     "clear:all": "rm -rf css posts photography about list"
   },
   "bin": {
-    "render": "_bin/render.js"
+    "render": "_bin/render.js",
+    "push": "_bin/push.js"
   },
   "author": "timi",
   "license": "ISC",
   "dependencies": {
+    "curl": "^0.1.4",
     "del": "^2.2.2",
     "glob-all": "^3.1.0",
     "gulp": "^3.9.1",
@@ -21,19 +22,14 @@
     "highlight.js": "^9.11.0",
     "http-server": "^0.10.0",
     "imagemin": "^5.2.2",
-    "imagemin-mozjpeg": "^6.0.0",
+    "imagemin-jpeg-recompress": "^5.1.0",
     "imagemin-pngquant": "^5.0.0",
     "jimp": "^0.2.27",
-    "jstransformer-markdown-it": "^2.0.0",
     "marked": "^0.3.6",
     "pug": "^2.0.0-rc.1",
     "shelljs": "^0.7.7",
     "stylus": "^0.54.5",
     "yaml-front-matter": "^3.4.0",
     "yargs": "^8.0.1"
-  },
-  "devDependencies": {
-    "imagemin-jpeg-recompress": "^5.1.0",
-    "imagemin-optipng": "^5.2.1"
   }
 }
