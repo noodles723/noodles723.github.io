@@ -4,8 +4,8 @@
     hm.src = "https://hm.baidu.com/hm.js?1d0db9c3c2c6dc7d78ff8eac0ea41f6f";
     var s = document.getElementsByTagName("script")[0];
     s.parentNode.insertBefore(hm, s);
-})();</script><link rel="stylesheet" href="/css/base.css"/><link rel="stylesheet" href="/css/post.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/github.min.css"/></head><body><h1 class="blog-logo"><a href="/" title="Home"><img src="/img/logo.png"/></a></h1><nav id="blog-header-nav"><ul class="nav-list"><li><a href="/list" class="nav-item hover-lighten" title="posts">Posts</a></li><li><a href="/photography" class="nav-item hover-lighten" title="photography">Photography</a></li><li><a href="/about" class="nav-item hover-lighten" title="about">About</a></li></ul></nav><div class="main-wrapper"><main id="main"><article id="post-content"><header class="post-content-header"><h1>Koa初上手体验教程</h1><span class="date">2017.04.06</span></header><div class="post-content-body"><div class="article-content"><p>##Hello World
-koa是一个像express一样的基于node的web框架，原生异步及中间件的理念。
+})();</script><link rel="stylesheet" href="/css/base.css"/><link rel="stylesheet" href="/css/post.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/github.min.css"/></head><body><h1 class="blog-logo"><a href="/" title="Home"><img src="/img/logo.png"/></a></h1><nav id="blog-header-nav"><ul class="nav-list"><li><a href="/list" class="nav-item hover-lighten" title="posts">Posts</a></li><li><a href="/photography" class="nav-item hover-lighten" title="photography">Photography</a></li><li><a href="/about" class="nav-item hover-lighten" title="about">About</a></li></ul></nav><div class="main-wrapper"><main id="main"><article id="post-content"><header class="post-content-header"><h1>Koa初上手体验教程</h1><span class="date">2017.04.06</span></header><div class="post-content-body"><div class="article-content"><h2 id="hello-world">Hello World</h2>
+<p>koa是一个像express一样的基于node的web框架，原生异步及中间件的理念。
 一个简单的hello world程序如下：</p>
 <pre><code class="lang-js"><span class="hljs-keyword">const</span> Koa = <span class="hljs-built_in">require</span>(<span class="hljs-string">'koa'</span>);
 <span class="hljs-keyword">const</span> app = <span class="hljs-keyword">new</span> Koa();
@@ -19,8 +19,8 @@ app.use(<span class="hljs-keyword">async</span> <span class="hljs-function"><spa
 
 app.listen(process.argv[<span class="hljs-number">2</span>])
 </code></pre>
-<p>##router
-koa中的router可以用ctx.path == ‘/‘这种方式来判断，也可以引入<a href="https://github.com/alexmingoia/koa-router">koa-router</a>用express的方法来写路由</p>
+<h2 id="router">router</h2>
+<p>koa中的router可以用ctx.path == ‘/‘这种方式来判断，也可以引入<a href="https://github.com/alexmingoia/koa-router">koa-router</a>用express的方法来写路由</p>
 <pre><code class="lang-js"><span class="hljs-keyword">var</span> router = <span class="hljs-built_in">require</span>(<span class="hljs-string">'koa-router'</span>)();
 
 router.get(<span class="hljs-string">'/'</span>, <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">ctx, next</span>) </span>{ ctx.body = <span class="hljs-string">"hello koa"</span>});
@@ -34,8 +34,8 @@ router.post(<span class="hljs-string">'/'</span>, koaBody, <span class="hljs-key
 });
 </code></pre>
 <p>关于返回值，如果直接写<code>ctx.body = { foo: &#39;bar&#39; };</code>返回的是json</p>
-<p>##middleware
-一个简单的middleware实现如下：</p>
+<h2 id="middleware">middleware</h2>
+<p>一个简单的middleware实现如下：</p>
 <pre><code class="lang-js"><span class="hljs-keyword">function</span> <span class="hljs-title">upperCase</span>() {
   <span class="hljs-keyword">return</span> <span class="hljs-type">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title"></span>(ctx, next) {
     await next();
@@ -44,7 +44,7 @@ router.post(<span class="hljs-string">'/'</span>, koaBody, <span class="hljs-key
 }
 app.<span class="hljs-keyword">use</span>(upperCase());
 </code></pre>
-<p>##cookie</p>
+<h2 id="cookie">cookie</h2>
 <pre><code class="lang-js">app.keys = [<span class="hljs-string">'secret'</span>, <span class="hljs-string">'keys'</span>];
 app.use(function *(){
   <span class="hljs-keyword">var</span> n = ~~<span class="hljs-keyword">this</span>.cookies.<span class="hljs-keyword">get</span>(<span class="hljs-string">'view'</span>, { signed: <span class="hljs-literal">true</span> }) + <span class="hljs-number">1</span>;
@@ -57,7 +57,7 @@ app.use(function *(){
 <li>!!(value) === Boolean(value)</li>
 <li>~~ 将一个参数转化为 32 位有符号整数</li>
 </ul>
-<p>##一些常用的middleware</p>
+<h2 id="-middleware">一些常用的middleware</h2>
 <ol>
 <li><a href="https://github.com/koajs/static">koa-static</a> :静态文件访问</li>
 <li><a href="https://github.com/alexmingoia/koa-router">koa-router</a>：路由控制</li>

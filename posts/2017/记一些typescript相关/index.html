@@ -4,8 +4,7 @@
     hm.src = "https://hm.baidu.com/hm.js?1d0db9c3c2c6dc7d78ff8eac0ea41f6f";
     var s = document.getElementsByTagName("script")[0];
     s.parentNode.insertBefore(hm, s);
-})();</script><link rel="stylesheet" href="/css/base.css"/><link rel="stylesheet" href="/css/post.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/github.min.css"/></head><body><h1 class="blog-logo"><a href="/" title="Home"><img src="/img/logo.png"/></a></h1><nav id="blog-header-nav"><ul class="nav-list"><li><a href="/list" class="nav-item hover-lighten" title="posts">Posts</a></li><li><a href="/photography" class="nav-item hover-lighten" title="photography">Photography</a></li><li><a href="/about" class="nav-item hover-lighten" title="about">About</a></li></ul></nav><div class="main-wrapper"><main id="main"><article id="post-content"><header class="post-content-header"><h1>记一些typescript相关</h1><span class="date">2017.03.24</span></header><div class="post-content-body"><div class="article-content"><p>#记一些typescript相关</p>
-<p>##基本类型</p>
+})();</script><link rel="stylesheet" href="/css/base.css"/><link rel="stylesheet" href="/css/post.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/github.min.css"/></head><body><h1 class="blog-logo"><a href="/" title="Home"><img src="/img/logo.png"/></a></h1><nav id="blog-header-nav"><ul class="nav-list"><li><a href="/list" class="nav-item hover-lighten" title="posts">Posts</a></li><li><a href="/photography" class="nav-item hover-lighten" title="photography">Photography</a></li><li><a href="/about" class="nav-item hover-lighten" title="about">About</a></li></ul></nav><div class="main-wrapper"><main id="main"><article id="post-content"><header class="post-content-header"><h1>记一些typescript相关</h1><span class="date">2017.03.24</span></header><div class="post-content-body"><div class="article-content"><h2 id="-">基本类型</h2>
 <ol>
 <li>boolean, 例：<code>let isDone: boolean = false</code></li>
 <li>number</li>
@@ -19,8 +18,8 @@
 <li>never, 类似断言</li>
 </ol>
 <p>强制类型转换：<code>(&lt;string&gt;someValue).length</code>或<code>(someValue as string).length</code></p>
-<p>##定义变量及函数
-<em>let</em>的一些使用</p>
+<h2 id="-">定义变量及函数</h2>
+<p><em>let</em>的一些使用</p>
 <pre><code class="lang-typescript"><span class="hljs-keyword">let</span> [first, ...rest] = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>]; <span class="hljs-comment">// first = 1, rest = [2,3,4]</span>
 <span class="hljs-keyword">let</span> { a, ...passthrough } = o; <span class="hljs-comment">//将o的属性赋给a, passthrough</span>
 
@@ -46,8 +45,8 @@
 }
 </code></pre>
 <p>一般变量用<em>const</em>, 属性用<em>readonly</em></p>
-<p>##类class
-基本定义</p>
+<h2 id="-class">类class</h2>
+<p>基本定义</p>
 <pre><code class="lang-typescript"><span class="hljs-keyword">class</span> Animal {
     name: <span class="hljs-built_in">string</span>;
     <span class="hljs-keyword">constructor</span>(<span class="hljs-params">theName: <span class="hljs-built_in">string</span></span>) { <span class="hljs-keyword">this</span>.name = theName; }
@@ -86,8 +85,8 @@ let sam = <span class="hljs-keyword">new</span> <span class="hljs-type">Snake</s
     }
 }
 </code></pre>
-<p>##函数
-类型定义<code>let myAdd: (x: number, y: number)=&gt;number</code>
+<h2 id="-">函数</h2>
+<p>类型定义<code>let myAdd: (x: number, y: number)=&gt;number</code>
 括号函数：</p>
 <pre><code class="lang-typescript"><span class="hljs-keyword">let</span> deck: Deck = {
     <span class="hljs-attr">suits</span>: [<span class="hljs-string">"hearts"</span>, <span class="hljs-string">"spades"</span>, <span class="hljs-string">"clubs"</span>, <span class="hljs-string">"diamonds"</span>],
@@ -99,8 +98,8 @@ let sam = <span class="hljs-keyword">new</span> <span class="hljs-type">Snake</s
     }
 }
 </code></pre>
-<p>##生成器generics
-T可保证类型的准确性</p>
+<h2 id="-generics">生成器generics</h2>
+<p>T可保证类型的准确性</p>
 <pre><code class="lang-typescript">interface GenericIdentityFn {
     &lt;<span class="hljs-literal">T</span>&gt;(arg: <span class="hljs-literal">T</span>): <span class="hljs-literal">T</span>;
 }
@@ -111,7 +110,7 @@ T可保证类型的准确性</p>
 
 let myIdentity: GenericIdentityFn = identity;
 </code></pre>
-<p>##枚举</p>
+<h2 id="-">枚举</h2>
 <pre><code class="lang-typescript"><span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">Direction</span> {</span>
     Up = <span class="hljs-number">1</span>,
     Down,
@@ -119,7 +118,7 @@ let myIdentity: GenericIdentityFn = identity;
     Right
 }
 </code></pre>
-<p>##Iterators and Generators</p>
+<h2 id="iterators-and-generators">Iterators and Generators</h2>
 <pre><code><span class="hljs-keyword">let</span> <span class="hljs-keyword">list</span> = [<span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>];
 <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i <span class="hljs-keyword">in</span> <span class="hljs-keyword">list</span>) {
    console.log(i); // <span class="hljs-string">"0"</span>, <span class="hljs-string">"1"</span>, <span class="hljs-string">"2"</span>,
@@ -127,8 +126,8 @@ let myIdentity: GenericIdentityFn = identity;
 <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i of <span class="hljs-keyword">list</span>) {
    console.log(i); // <span class="hljs-string">"4"</span>, <span class="hljs-string">"5"</span>, <span class="hljs-string">"6"</span>
 }
-</code></pre><p>##Modules
-如果只export一个单独的类或函数, 用export default</p>
+</code></pre><h2 id="modules">Modules</h2>
+<p>如果只export一个单独的类或函数, 用export default</p>
 <pre><code><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getThing</span>(<span class="hljs-params"></span>) </span>{ <span class="hljs-keyword">return</span> <span class="hljs-string">"thing"</span>; }
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SomeType</span> </span>{
   <span class="hljs-keyword">constructor</span>() { ... }
@@ -153,8 +152,8 @@ let myIdentity: GenericIdentityFn = identity;
 
 <span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> myLargeModule <span class="hljs-keyword">from</span> <span class="hljs-string">"./MyLargeModule.ts"</span>;
 <span class="hljs-keyword">let</span> x = <span class="hljs-keyword">new</span> myLargeModule.Dog();
-</code></pre><p>##其他
-关于装饰器的东西打算单独再开一篇了。。。</p>
+</code></pre><h2 id="-">其他</h2>
+<p>关于装饰器的东西打算单独再开一篇了。。。</p>
 </div><footer><div class="comments-section"><div id="disqus_thread"><script>/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
 var disqus_shortname = 'tianqi'; // required: replace example with your forum shortname
 

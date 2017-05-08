@@ -7,7 +7,7 @@ keywords: ["Koa", "nodejs"]
 cover: ""
 ---
 
-##Hello World
+## Hello World
 koa是一个像express一样的基于node的web框架，原生异步及中间件的理念。
 一个简单的hello world程序如下：
 ```js
@@ -24,7 +24,7 @@ app.use(async function (ctx, next) {
 app.listen(process.argv[2])
 ```
 
-##router
+## router
 koa中的router可以用ctx.path == '/'这种方式来判断，也可以引入[koa-router](https://github.com/alexmingoia/koa-router)用express的方法来写路由
 ```js
 var router = require('koa-router')();
@@ -43,7 +43,7 @@ router.post('/', koaBody, async function (ctx, next) {
 ```
 关于返回值，如果直接写`ctx.body = { foo: 'bar' };`返回的是json
 
-##middleware
+## middleware
 一个简单的middleware实现如下：
 ```js
 function upperCase() {
@@ -55,7 +55,7 @@ function upperCase() {
 app.use(upperCase());
 ```
 
-##cookie
+## cookie
 ```js
 app.keys = ['secret', 'keys'];
 app.use(function *(){
@@ -68,7 +68,7 @@ app.use(function *(){
  - !!(value) === Boolean(value)
  - ~~ 将一个参数转化为 32 位有符号整数
 
-##一些常用的middleware
+## 一些常用的middleware
 1. [koa-static](https://github.com/koajs/static) :静态文件访问
 2. [koa-router](https://github.com/alexmingoia/koa-router)：路由控制
 3. [koa-views](https://github.com/queckezz/koa-views)：模板渲染

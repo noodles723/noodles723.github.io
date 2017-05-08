@@ -6,9 +6,7 @@ category: ["前端语言"]
 keywords: ["typescript"]
 cover: ""
 ---
-
-#记一些typescript相关
-##基本类型
+## 基本类型
 1. boolean, 例：`let isDone: boolean = false`
 2. number
 3. string, eg: ```let st: string = `my name is ${ fullName }` ```
@@ -22,7 +20,7 @@ cover: ""
 
 强制类型转换：`(<string>someValue).length`或`(someValue as string).length`
 
-##定义变量及函数
+## 定义变量及函数
 *let*的一些使用
 ```typescript
 let [first, ...rest] = [1, 2, 3, 4]; // first = 1, rest = [2,3,4]
@@ -54,7 +52,7 @@ function printLabel(labelledObj: LabelledValue) {
 ```
 一般变量用*const*, 属性用*readonly*
 
-##类class
+## 类class
 基本定义
 ```typescript
 class Animal {
@@ -99,7 +97,7 @@ abstract class Animal {
 }
 ```
 
-##函数
+## 函数
 类型定义`let myAdd: (x: number, y: number)=>number`
 括号函数：
 ```typescript
@@ -114,7 +112,7 @@ let deck: Deck = {
 }
 ```
 
-##生成器generics
+## 生成器generics
 T可保证类型的准确性
 ```typescript
 interface GenericIdentityFn {
@@ -128,7 +126,7 @@ function identity<T>(arg: T): T {
 let myIdentity: GenericIdentityFn = identity;
 ```
 
-##枚举
+## 枚举
 ```typescript
 enum Direction {
     Up = 1,
@@ -138,7 +136,7 @@ enum Direction {
 }
 ```
 
-##Iterators and Generators
+## Iterators and Generators
 ```
 let list = [4, 5, 6];
 for (let i in list) {
@@ -149,7 +147,7 @@ for (let i of list) {
 }
 ```
 
-##Modules
+## Modules
 如果只export一个单独的类或函数, 用export default
 ```
 export default function getThing() { return "thing"; }
@@ -184,5 +182,5 @@ import * as myLargeModule from "./MyLargeModule.ts";
 let x = new myLargeModule.Dog();
 ```
 
-##其他
+## 其他
 关于装饰器的东西打算单独再开一篇了。。。
