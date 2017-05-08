@@ -11,6 +11,8 @@ var renderStylus = require("./_stylus");
 var renderPost = require("./_post");
 // 渲染post list
 var renderList = require("./_list");
+// 渲染网站主页
+var renderHomepage = require("./_homepage");
 
 yargs.usage('$0 <cmd> [args]')
 	.help()
@@ -19,4 +21,6 @@ yargs.usage('$0 <cmd> [args]')
 	.command("album [folder]", "render album html page", {}, renderAlbum)
 	.command("post [folder]", "render post page", {}, renderPost)
 	.command("list", "render post list page", {}, renderList)
+	.command("homepage", "render index homepage", {}, renderHomepage)
+	.argv;
 

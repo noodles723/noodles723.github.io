@@ -54,17 +54,18 @@ var renderAlbumListPage = function() {
 	var years = glob.sync([
 		path.join(base, "*"),
 		"!"+path.join(base, ".*")
-	]).sort().reverse();
+	]).map(f => path.basename(f)).sort().reverse();
 	var albumObj = {};
 
 	years.forEach(year => {
 		var list = glob.sync([
 			path.join(base, year, "*"),
 			"!"+path.join(base, year, ".*")
-		]).sort();
+		]).map(f => path.basename(f)).sort();
 		if(list && list.length)
 			albumObj[year] = list;
 	});
+
 
 	gulp.src(path.join(TPLBASE, "index.pug"))
 		.pipe(pug({locals: {

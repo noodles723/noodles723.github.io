@@ -1,0 +1,30 @@
+extends ../common/layout.pug
+
+block title
+	title 天祺的空间
+	meta(name="keywords", content="博客文章列表")
+	meta(name="description", content="博客文章列表")
+
+block extra-head
+	link(rel="stylesheet", href="/css/list.css")
+
+block main
+	ul.posts-list
+		each post in postList
+			li.post-item
+				.post-hd
+					a.title(href=post.url)= post.title
+					.date= post.createtime
+				.post-bd
+					a.cover(href=post.url)
+						img(src=post.cover)
+					.description!= post.description
+					a.more(href=post.url) more >>
+
+	section.pagination
+		if prev
+			.prev
+				a(href=prev) << Prev
+		if next
+			.next
+				a(href=next) Next >>

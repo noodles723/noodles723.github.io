@@ -11,7 +11,7 @@ const stylus = require("gulp-stylus");
 
 module.exports = function(argv) {
 	var outDir = argv.o ? path.join(BASE, argv.o) : path.join(BASE, "css");
-	var file = argv.file ? path.join(STYLBASE, argv.file, ".styl") : path.join(STYLBASE, "*.styl");
+	var file = argv.file ? path.join(STYLBASE, argv.file+".styl") : path.join(STYLBASE, "*.styl");
 
 	if(argv.C) {
 		del(outDir).then(() => {

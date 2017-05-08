@@ -1,0 +1,94 @@
+<html><head><title></title><meta name="keywords"/><meta name="description"/><meta charset="UTF-8"/><meta name="renderer" content="webkit"/><meta name="referrer" content="always"/><meta name="googlebot" content="NOODP"/><meta name="viewport" content="width=device-width,initial-scale=1.0,height=device-height,user-scalable=no,minimum-scale=1.0,maximum-scale=1.0"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="apple-mobile-web-app-status-bar-style" content="black"/><meta name="format-detection" content="telephone=no, email=no"/><meta name="robots" content="index,follow"/><meta http-equiv="Cache-Control" content="no-siteapp"/><meta name="renderer" content="webkit"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="HandheldFriendly" content="true"/><meta name="MobileOptimized" content="320"/><meta name="screen-orientation" content="portrait"/><meta name="x5-orientation" content="portrait"/><meta name="full-screen" content="yes"/><meta name="x5-fullscreen" content="true"/><meta name="browsermode" content="application"/><meta name="x5-page-mode" content="app"/><meta name="msapplication-tap-highlight" content="no"/><script>var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?1d0db9c3c2c6dc7d78ff8eac0ea41f6f";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();</script><link rel="stylesheet" href="/css/base.css"/><link rel="stylesheet" href="/css/post.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/github.min.css"/></head><body><h1 class="blog-logo"><a href="/" title="Home"><img src="/img/logo.png"/></a></h1><nav id="blog-header-nav"><ul class="nav-list"><li><a href="/list" class="nav-item hover-lighten" title="posts">Posts</a></li><li><a href="/photography" class="nav-item hover-lighten" title="photography">Photography</a></li><li><a href="/about" class="nav-item hover-lighten" title="about">About</a></li></ul></nav><div class="main-wrapper"><main id="main"><article id="post-content"><header class="post-content-header"><h1>express简易教程，快速搭建服务器</h1><span class="date">2016.11.25</span></header><div class="post-content-body"><div class="article-content"><pre><code class="lang-bash">npm install express-generator -g <span class="hljs-string">//</span> 全局安装express cli
+express <span class="hljs-params">--view</span> <span class="hljs-params">(ejs|hbs|hjs|jade|pug|twig|vash)</span> <span class="hljs-params">--css</span> <span class="hljs-params">(less|stylus|compass|sass)</span> <span class="hljs-params">--git</span> <span class="hljs-params">--force</span> <span class="hljs-string">//</span> 常用命令
+express <span class="hljs-params">--css=stylus</span> code <span class="hljs-string">//</span> 新建code项目
+<span class="hljs-keyword">cd</span> code&amp;npm install
+DEBUG=myapp:* npm start <span class="hljs-string">//</span> run the app
+</code></pre>
+<p>项目的目录结构为：</p>
+<pre><code>.
+├── app<span class="hljs-selector-class">.js</span>
+├── bin
+│   └── www
+├── package<span class="hljs-selector-class">.json</span>
+├── public
+│   ├── images
+│   ├── javascripts
+│   └── stylesheets
+│       └── style<span class="hljs-selector-class">.css</span>
+├── routes
+│   ├── index<span class="hljs-selector-class">.js</span>
+│   └── users<span class="hljs-selector-class">.js</span>
+└── views
+    ├── error<span class="hljs-selector-class">.jade</span>
+    ├── index<span class="hljs-selector-class">.jade</span>
+    └── layout.jade
+</code></pre><h3 id="-">路由</h3>
+<p>基本用法：</p>
+<pre><code class="lang-nodejs">app.get(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(req, res)</span> </span>{ <span class="hljs-comment">// 或app.post, app.put, app.delete, app.all</span>
+  res.send(<span class="hljs-string">'Hello World!'</span>)
+})
+
+<span class="hljs-comment">// 静态文件</span>
+app.<span class="hljs-keyword">use</span>(express.<span class="hljs-keyword">static</span>(<span class="hljs-string">'public'</span>))
+app.<span class="hljs-keyword">use</span>(<span class="hljs-string">'/static'</span>, express.<span class="hljs-keyword">static</span>(<span class="hljs-string">'public'</span>))
+app.<span class="hljs-keyword">use</span>(<span class="hljs-string">'/static'</span>, express.<span class="hljs-keyword">static</span>(path.join(__dirname, <span class="hljs-string">'public'</span>)))
+</code></pre>
+<p>路由支持正则匹配</p>
+<pre><code class="lang-node">app.get(<span class="hljs-regexp">/.*fly$/</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">req, res</span>) </span>{
+  res.send(<span class="hljs-string">'/.*fly$/'</span>)
+})
+</code></pre>
+<p>获取url中的值</p>
+<pre><code class="lang-node">Route <span class="hljs-string">path:</span> <span class="hljs-regexp">/users/</span>:userId<span class="hljs-regexp">/books/</span>:bookId
+Request <span class="hljs-string">URL:</span> <span class="hljs-string">http:</span><span class="hljs-comment">//localhost:3000/users/34/books/8989</span>
+req.<span class="hljs-string">params:</span> { <span class="hljs-string">"userId"</span>: <span class="hljs-string">"34"</span>, <span class="hljs-string">"bookId"</span>: <span class="hljs-string">"8989"</span> }
+
+app.get(<span class="hljs-string">'/users/:userId/books/:bookId'</span>, function (req, res) {
+  res.send(req.params)
+})
+</code></pre>
+<p>一个路由可被多个函数处理</p>
+<pre><code class="lang-node"><span class="hljs-keyword">var</span> cb0 = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">req, res, next</span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'CB0'</span>)
+  next()
+}
+
+<span class="hljs-keyword">var</span> cb1 = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">req, res, next</span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'CB1'</span>)
+  next()
+}
+
+<span class="hljs-keyword">var</span> cb2 = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">req, res</span>) </span>{
+  res.send(<span class="hljs-string">'Hello from C!'</span>)
+}
+
+app.get(<span class="hljs-string">'/example/c'</span>, [cb0, cb1, cb2])
+</code></pre>
+<p>res的方法：</p>
+<ul>
+<li>res.download()</li>
+<li>res.end()</li>
+<li>res.json()</li>
+<li>res.jsonp()</li>
+<li>res.redirect()</li>
+<li>res.render()</li>
+<li>res.send()</li>
+<li>res.sendFile()</li>
+<li>res.sendStatus()</li>
+</ul>
+</div><footer><div class="comments-section"><div id="disqus_thread"><script>/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = 'tianqi'; // required: replace example with your forum shortname
+
+/* * * DON'T EDIT BELOW THIS LINE * * */
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script></div></div></footer></div><footer class="post-content-footer" flex-row="flex-row"><a class="prev" href="/posts/2015/ECMAScript 6(ES2015)小记"><label>Prev</label><p>ECMAScript 6(ES2015)小记</p></a><a class="next" href="/posts/2017/记一些typescript相关"><label>Next</label><p>记一些typescript相关</p></a></footer></article></main><footer id="home-footer">.copyright © 2015 by Tianqi</footer></div></body></html>

@@ -7,12 +7,13 @@ keywords: ["angular"]
 cover: ""
 ---
 
-## 简介
 > 有点觉得快乐写小js的时代已经一去不复返了。。。
 
 AOT预编译(ahead of time)和JIT及时编译(just in time)是angular团队2016年 Angular Connect 大会上提出的概念，可参考[这里](https://www.youtube.com/watch?v=kW9cJsvcsGo)。
 
 预编译指的是angular的Component有关的模板文件的预处理，是基于ng自己框架层面的预编译并不是指语言上的。
+
+<!-- more -->
 
 ## 准备
 首先得安装一些依赖：

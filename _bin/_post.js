@@ -6,6 +6,7 @@ const pug = require("gulp-pug");
 const del = require('del');
 const fs = require("fs");
 const glob = require("glob-all");
+const shell = require('shelljs');
 
 const imagemin = require('imagemin');
 const imageminJpegRecompress = require('imagemin-jpeg-recompress');
@@ -39,18 +40,21 @@ var renderPostPage = function(folder, outDir, prev, next) {
 	post.__content = marked(post.__content);
 	post.title = post.title || path.basename(outDir);
 	var time = folder.match(/(\d{4})[\\\/](\d{2}\.\d{2})__/);
+	post.url = "/posts/"+time[1]+"/"+post.title;
 	post.createtime = post.createtime ? post.createtime.replace(/-/g, ".") : time[1]+"."+time[2];
 	if(!post.description) {
 		var moreIndex = post.__content.indexOf("<!-- more -->");
 		post.description = moreIndex>0 ? post.__content.substr(0, moreIndex) : "";
 	}
-	post.cover = !post.cover ? "https://source.unsplash.com/600x120?code" : post.cover;
+	post.cover = !post.cover ? "https://source.unsplash.com/600x180?sig="+Math.floor(Math.random()*1000) : post.cover;
 
 	gulp.src(POSTTPL).pipe(pug({locals:{
 		post: post,
 		prev: prev,
 		next: next
 	}})).pipe(gulp.dest(outDir));
+
+	return post;
 };
 
 // render page [file] -o [dir]
@@ -65,35 +69,51 @@ module.exports = function(argv) {
 		path.join(BASE, "_posts", "*", "*"),
 		"!"+path.join(BASE, "_posts", "**", ".*")
 	]).sort();
+
+	let render = (i, allFolders) => {
+		var prev = i>0 ? allFolders[i-1].split("_posts/")[1].replace(/\d{2}\.\d{2}__/, "") : null;
+		var next = i<allFolders.length-1 ? allFolders[i+1].split("_posts/")[1].replace(/\d{2}\.\d{2}__/, "") : null;
+		var outDir = allFolders[i].replace("_posts", "posts").replace(/\d{2}\.\d{2}__/, "");
+		return renderPostPage(allFolders[i], outDir, prev, next);
+	};
+
 	if(typeof(argv.folder) === "number") { // 渲染年
 		var folders = allFolders.filter(f => f.match("_posts/"+argv.folder.toString()) );
 		var firstIndex = allFolders.indexOf(folders[0]);
 
 		del(path.join(BASE, "posts", argv.folder.toString())).then(()=>{
 			for(var i=firstIndex; i<firstIndex+folders.length; i++) {
-				var prev = i>0 ? allFolders[i-1].split("_posts/")[1].replace(/\d{2}\.\d{2}__/, "") : null;
-				var next = i<allFolders.length-1 ? allFolders[i+1].split("_posts/")[1].replace(/\d{2}\.\d{2}__/, "") : null;
-				var outDir = allFolders[i].replace("_posts", "posts").replace(/\d{2}\.\d{2}__/, "");
-				renderPostPage(allFolders[i], outDir, prev, next);
+				render(i, allFolders);
 			}
+
+			// 渲染列表
+			shell.exec("render list -A");
 		});
 	} else if(typeof(argv.folder) === "string") { // 渲染指定post
 		var folder = allFolders.filter(f => f.indexOf(argv.folder)>0)[0];
 		var i = allFolders.indexOf(folder);
-		var prev = i>0 ? allFolders[i-1].split("_posts/")[1].replace(/\d{2}\.\d{2}__/, "") : null;
-		var next = i<allFolders.length-1 ? allFolders[i+1].split("_posts/")[1].replace(/\d{2}\.\d{2}__/, "") : null;
-		var outDir = folder.replace("_posts", "posts").replace(/\d{2}\.\d{2}__/, "");
-		del(outDir).then(()=>{
-			renderPostPage(folder, outDir, prev, next);
-		})
+
+		let postObj = render(i, allFolders);
+		postObj.__content = undefined;
+
+		// 渲染列表
+		let cacheFile = path.join(BASE, "_cacheList.json");
+		if(fs.existsSync(cacheFile)) {
+			let listJSON = JSON.parse(fs.readFileSync(cacheFile));
+			listJSON.push(postObj);
+			fs.writeFileSync(cacheFile, listJSON.stringify());
+			shell.exec("render list");
+		} else {
+			shell.exec("render list -A");
+		}
+
 	} else if(typeof(argv.folder) === "undefined" && argv.A) { // 渲染全部
 		del(path.join(BASE, "posts")).then(()=>{
 			for(var i=0; i<allFolders.length; i++) {
-				var prev = i>0 ? allFolders[i-1].split("_posts/")[1].replace(/\d{2}\.\d{2}__/, "") : null;
-				var next = i<allFolders.length-1 ? allFolders[i+1].split("_posts/")[1].replace(/\d{2}\.\d{2}__/, "") : null;
-				var outDir = allFolders[i].replace("_posts", "posts").replace(/\d{2}\.\d{2}__/, "");
-				renderPostPage(allFolders[i], outDir, prev, next);
+				render(i, allFolders);
 			}
+			// 渲染列表
+			shell.exec("render list -A");
 		});
 	}
 };

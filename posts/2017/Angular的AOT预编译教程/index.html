@@ -1,0 +1,145 @@
+<html><head><title></title><meta name="keywords"/><meta name="description"/><meta charset="UTF-8"/><meta name="renderer" content="webkit"/><meta name="referrer" content="always"/><meta name="googlebot" content="NOODP"/><meta name="viewport" content="width=device-width,initial-scale=1.0,height=device-height,user-scalable=no,minimum-scale=1.0,maximum-scale=1.0"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="apple-mobile-web-app-status-bar-style" content="black"/><meta name="format-detection" content="telephone=no, email=no"/><meta name="robots" content="index,follow"/><meta http-equiv="Cache-Control" content="no-siteapp"/><meta name="renderer" content="webkit"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="HandheldFriendly" content="true"/><meta name="MobileOptimized" content="320"/><meta name="screen-orientation" content="portrait"/><meta name="x5-orientation" content="portrait"/><meta name="full-screen" content="yes"/><meta name="x5-fullscreen" content="true"/><meta name="browsermode" content="application"/><meta name="x5-page-mode" content="app"/><meta name="msapplication-tap-highlight" content="no"/><script>var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?1d0db9c3c2c6dc7d78ff8eac0ea41f6f";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();</script><link rel="stylesheet" href="/css/base.css"/><link rel="stylesheet" href="/css/post.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/github.min.css"/></head><body><h1 class="blog-logo"><a href="/" title="Home"><img src="/img/logo.png"/></a></h1><nav id="blog-header-nav"><ul class="nav-list"><li><a href="/list" class="nav-item hover-lighten" title="posts">Posts</a></li><li><a href="/photography" class="nav-item hover-lighten" title="photography">Photography</a></li><li><a href="/about" class="nav-item hover-lighten" title="about">About</a></li></ul></nav><div class="main-wrapper"><main id="main"><article id="post-content"><header class="post-content-header"><h1>Angular的AOT预编译教程</h1><span class="date">2017.04.20</span></header><div class="post-content-body"><div class="article-content"><blockquote>
+<p>有点觉得快乐写小js的时代已经一去不复返了。。。</p>
+</blockquote>
+<p>AOT预编译(ahead of time)和JIT及时编译(just in time)是angular团队2016年 Angular Connect 大会上提出的概念，可参考<a href="https://www.youtube.com/watch?v=kW9cJsvcsGo">这里</a>。</p>
+<p>预编译指的是angular的Component有关的模板文件的预处理，是基于ng自己框架层面的预编译并不是指语言上的。</p>
+<!-- more -->
+<h2 id="-">准备</h2>
+<p>首先得安装一些依赖：</p>
+<pre><code class="lang-bash"><span class="hljs-built_in">npm</span> install @angular/compiler-cli @angular/platform-server --save
+</code></pre>
+<p><strong>ngc</strong>某种程度上可以看成是 <strong>tsc</strong>的ng定制版，同样需要<code>tsconfig.json</code>配置文件，官方给出的配置文件内容如下：</p>
+<pre><code class="lang-json">{
+  <span class="hljs-string">"compilerOptions"</span>: {
+    <span class="hljs-string">"target"</span>: <span class="hljs-string">"es5"</span>,
+    <span class="hljs-string">"module"</span>: <span class="hljs-string">"es2015"</span>,// 这里改成es2015是为了之后的tree shaking压缩
+    <span class="hljs-string">"moduleResolution"</span>: <span class="hljs-string">"node"</span>,
+    <span class="hljs-string">"sourceMap"</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-string">"emitDecoratorMetadata"</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-string">"experimentalDecorators"</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-string">"lib"</span>: [<span class="hljs-string">"es2015"</span>, <span class="hljs-string">"dom"</span>],
+    <span class="hljs-string">"noImplicitAny"</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-string">"suppressImplicitAnyIndexErrors"</span>: <span class="hljs-literal">true</span>
+  },
+
+  <span class="hljs-string">"files"</span>: [
+    <span class="hljs-string">"src/app/app.module.ts"</span>,
+    <span class="hljs-string">"src/main.ts"</span>
+  ],
+
+  <span class="hljs-string">"angularCompilerOptions"</span>: {
+   <span class="hljs-string">"genDir"</span>: <span class="hljs-string">"aot"</span>, // 生成文件目录
+   <span class="hljs-string">"skipMetadataEmit"</span> : <span class="hljs-literal">true</span>  // 是否跳过生成metadata
+ }
+}
+</code></pre>
+<p>ngc要求html模板文件和css文件都要使用相对路径，即@Component里的templateUrl和styleUrl必须写成相对于component.ts文件的地址。</p>
+<h2 id="-">编译</h2>
+<p>编译命令很简单：</p>
+<pre><code class="lang-bash">node_modules/.bin/ngc -<span class="hljs-selector-tag">p</span> tsconfig-aot<span class="hljs-selector-class">.json</span>     <span class="hljs-comment">// mac, linux</span>
+<span class="hljs-string">"node_modules/.bin/ngc"</span> -<span class="hljs-selector-tag">p</span> tsconfig-aot<span class="hljs-selector-class">.json</span>   <span class="hljs-comment">// windows</span>
+</code></pre>
+<p><code>-p</code>参数是选择tsconfig.json文件的地址，或包含tsconfig.json的文件夹的地址。</p>
+<p>ngc会把文件编译到genDir的aot文件夹下，类似<code>aot/app.component.ngfactory.ts</code>.</p>
+<h2 id="-">构建</h2>
+<p>编译之后，构建方式也得稍作修改，因为我们不再直接用component.ts了，改为ngfactory.ts了，所以在main.ts里需要将<code>platformBrowserDynamic.bootstrap</code>换成<code>platformBrowser().bootstrapModuleFactory</code>，入参是生成的ngfactory文件。</p>
+<p>然后再用ngc编译一次。</p>
+<h2 id="tree-shaking-">Tree shaking 压缩</h2>
+<p>官方文档是使用Rollup来做tree shaking，rollup只识别<code>import</code>和<code>export</code>而非<code>require</code>，所以在之前的tsconfig里才写的es2015。</p>
+<p>用如下命令安装rollup及其插件:</p>
+<pre><code class="lang-bash">npm <span class="hljs-keyword">install</span> <span class="hljs-keyword">rollup</span> <span class="hljs-keyword">rollup</span>-<span class="hljs-keyword">plugin</span>-node-resolve <span class="hljs-keyword">rollup</span>-<span class="hljs-keyword">plugin</span>-commonjs <span class="hljs-keyword">rollup</span>-<span class="hljs-keyword">plugin</span>-uglify <span class="hljs-comment">--save-dev</span>
+</code></pre>
+<p>然后新建一个配置文件<code>rollup-config.js</code>:</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> rollup      <span class="hljs-keyword">from</span> <span class="hljs-string">'rollup'</span>
+<span class="hljs-keyword">import</span> nodeResolve <span class="hljs-keyword">from</span> <span class="hljs-string">'rollup-plugin-node-resolve'</span>
+<span class="hljs-keyword">import</span> commonjs    <span class="hljs-keyword">from</span> <span class="hljs-string">'rollup-plugin-commonjs'</span>;
+<span class="hljs-keyword">import</span> uglify      <span class="hljs-keyword">from</span> <span class="hljs-string">'rollup-plugin-uglify'</span>
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+  <span class="hljs-attr">entry</span>: <span class="hljs-string">'src/main.js'</span>, <span class="hljs-comment">// 入口文件</span>
+  dest: <span class="hljs-string">'src/build.js'</span>, <span class="hljs-comment">// 输出文件</span>
+  sourceMap: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">format</span>: <span class="hljs-string">'iife'</span>,
+  <span class="hljs-attr">onwarn</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">warning</span>) </span>{
+    <span class="hljs-keyword">if</span> ( warning.code === <span class="hljs-string">'THIS_IS_UNDEFINED'</span> ) { <span class="hljs-keyword">return</span>; }
+    <span class="hljs-built_in">console</span>.warn( warning.message );
+  },
+  <span class="hljs-attr">plugins</span>: [
+      nodeResolve({<span class="hljs-attr">jsnext</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">module</span>: <span class="hljs-literal">true</span>}),
+      commonjs({ <span class="hljs-comment">// 将commonjs形式的require改成es2015形式的import</span>
+        include: <span class="hljs-string">'node_modules/rxjs/**'</span>,
+      }),
+      uglify()
+  ]
+}
+</code></pre>
+<p>运行rollup:</p>
+<pre><code class="lang-bash">node_modules/.bin/rollup -c rollup-config<span class="hljs-selector-class">.js</span> <span class="hljs-comment">// mac, linux</span>
+<span class="hljs-string">"node_modules/.bin/rollup"</span>  -c rollup-config<span class="hljs-selector-class">.js</span> <span class="hljs-comment">// windows</span>
+</code></pre>
+<p>最后就可以在html里一次性引入了：</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"build.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+<h2 id="npm-script">npm script</h2>
+<p>可以将命令集合一下写成npm的脚本：</p>
+<pre><code class="lang-json">{
+  <span class="hljs-attr">"scripts"</span>: {
+    <span class="hljs-attr">"build:aot"</span>: <span class="hljs-string">"ngc -p tsconfig-aot.json &amp;&amp; rollup -c rollup-config.js"</span>
+  }
+}
+</code></pre>
+<p>然后直接运行：</p>
+<pre><code class="lang-bash">npm <span class="hljs-keyword">run</span><span class="bash"> build:aot</span>
+</code></pre>
+<p>就可以执行AOT及压缩打包了</p>
+<h2 id="-">可能会遇到的错误</h2>
+<ol>
+<li><p>systemjs和ngc的相对定位的路径不同，systemjs是相对于当前url的定位，ngc是相对于当前文件，所以在system-config里一定要把所有ts文件都用systemjs-angular-loader处理一下，它会去修改这些相对路径。</p>
+<pre><code class="lang-json"><span class="hljs-attribute">meta</span>: {
+   <span class="hljs-string">'./*.ts'</span>: {
+     <span class="hljs-attribute">loader</span>: <span class="hljs-string">'systemjs-angular-loader.js'</span>
+   }
+ },
+</code></pre>
+</li>
+<li><p>ngc要求所有模块不带<code>.ts</code>后缀，所以system-config里要给文件加上后缀：</p>
+<pre><code class="lang-json"><span class="hljs-attribute">packages</span>: {
+   <span class="hljs-string">'app'</span>: {
+     <span class="hljs-attribute">defaultExtension</span>: <span class="hljs-string">'ts'</span>
+   },
+   <span class="hljs-attribute">rxjs</span>: {
+     <span class="hljs-attribute">defaultExtension</span>: <span class="hljs-string">'js'</span>
+   }
+ }
+</code></pre>
+</li>
+<li><p>ngc编译时出现错误：</p>
+<pre><code class="lang-bash">Member <span class="hljs-string">'xxx'</span> implicitly <span class="hljs-keyword">has</span> an <span class="hljs-string">'any'</span> <span class="hljs-keyword">type</span>
+</code></pre>
+<p>这是因为<code>tsconfig-aot.json</code>里 <em>compilerOptions.noImplicitAny</em>设为了 <em>true</em>,它会强制要求所有变量必须设置非 <em>any</em>的类型。
+解决方法是，可以将其改成 <em>false</em>，也可以去把报错的变量都设个类型。</p>
+</li>
+<li><p>用window变量引用第三方库时会报错：</p>
+<pre><code class="lang-bash"><span class="hljs-keyword">Property</span> <span class="hljs-string">'xxx'</span> does <span class="hljs-keyword">not</span> exist <span class="hljs-keyword">on</span> <span class="hljs-keyword">type</span> <span class="hljs-string">'Window'</span>.
+</code></pre>
+<p>解决方法：强制声明一下window变量：</p>
+<pre><code class="lang-ts">(&lt;<span class="hljs-built_in">any</span>&gt;<span class="hljs-built_in">window</span>).xxx
+</code></pre>
+</li>
+</ol>
+</div><footer><div class="comments-section"><div id="disqus_thread"><script>/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = 'tianqi'; // required: replace example with your forum shortname
+
+/* * * DON'T EDIT BELOW THIS LINE * * */
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script></div></div></footer></div><footer class="post-content-footer" flex-row="flex-row"><a class="prev" href="/posts/2017/Koa初上手体验教程"><label>Prev</label><p>Koa初上手体验教程</p></a><a class="next" href="/posts/2017/Angular Router教程"><label>Next</label><p>Angular Router教程</p></a></footer></article></main><footer id="home-footer">.copyright © 2015 by Tianqi</footer></div></body></html>
