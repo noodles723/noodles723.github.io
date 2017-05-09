@@ -93,15 +93,15 @@ module.exports = function(argv) {
 		var folder = allFolders.filter(f => f.indexOf(argv.folder)>0)[0];
 		var i = allFolders.indexOf(folder);
 
-		let postObj = render(i, allFolders);
-		postObj.__content = undefined;
+		let p = Object.assign({}, render(i, allFolders));
+		delete p.__content
 
 		// 渲染列表
 		let cacheFile = path.join(BASE, "_cacheList.json");
 		if(fs.existsSync(cacheFile)) {
 			let listJSON = JSON.parse(fs.readFileSync(cacheFile));
-			listJSON.push(postObj);
-			fs.writeFileSync(cacheFile, listJSON.stringify());
+			listJSON.push(p);
+			fs.writeFileSync(cacheFile, JSON.stringify(listJSON));
 			shell.exec("render list");
 		} else {
 			shell.exec("render list -A");
