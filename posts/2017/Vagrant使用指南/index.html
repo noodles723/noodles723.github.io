@@ -1,0 +1,43 @@
+<html><head><title></title><meta name="keywords"/><meta name="description"/><meta charset="UTF-8"/><meta name="renderer" content="webkit"/><meta name="referrer" content="always"/><meta name="googlebot" content="NOODP"/><meta name="viewport" content="width=device-width,initial-scale=1.0,height=device-height,user-scalable=no,minimum-scale=1.0,maximum-scale=1.0"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="apple-mobile-web-app-status-bar-style" content="black"/><meta name="format-detection" content="telephone=no, email=no"/><meta name="robots" content="index,follow"/><meta http-equiv="Cache-Control" content="no-siteapp"/><meta name="renderer" content="webkit"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="HandheldFriendly" content="true"/><meta name="MobileOptimized" content="320"/><meta name="screen-orientation" content="portrait"/><meta name="x5-orientation" content="portrait"/><meta name="full-screen" content="yes"/><meta name="x5-fullscreen" content="true"/><meta name="browsermode" content="application"/><meta name="x5-page-mode" content="app"/><meta name="msapplication-tap-highlight" content="no"/><script>var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?1d0db9c3c2c6dc7d78ff8eac0ea41f6f";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();</script><link rel="stylesheet" href="/css/base.css"/><link rel="stylesheet" href="/css/post.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/github.min.css"/></head><body><h1 class="blog-logo"><a href="/" title="Home"><img src="/img/logo.png"/></a></h1><nav id="blog-header-nav"><ul class="nav-list"><li><a href="/list" class="nav-item hover-lighten" title="posts">Posts</a></li><li><a href="/photography" class="nav-item hover-lighten" title="photography">Photography</a></li><li><a href="/about" class="nav-item hover-lighten" title="about">About</a></li></ul></nav><div class="main-wrapper"><main id="main"><article id="post-content"><header class="post-content-header"><h1>Vagrant使用指南</h1><span class="date">2017.05.17</span></header><div class="post-content-body"><div class="article-content"><p>这是一个简单的vagrant使用指南。</p>
+<!-- more -->
+<h2 id="why-vagrant">Why Vagrant</h2>
+<p>vagrant的主要功能之一是统一开发环境。</p>
+<p>用过windows做开发的人应该会懂我在说什么。。。。。</p>
+<h2 id="setup">Setup</h2>
+<h3 id="-">准备工作</h3>
+<p>先把工具下好：</p>
+<ul>
+<li><a href="https://releases.hashicorp.com/vagrant/1.9.5/vagrant_1.9.5.msi?_ga=2.50692458.238819100.1495002938-1952566367.1494922004">Vagrant</a></li>
+<li><a href="">VirtualBox</a></li>
+<li>还有所用的系统，可以从<a href="https://atlas.hashicorp.com/boxes/search">这里</a>找你想用的系统，以默认的64位ubuntu为例，下载地址为：<a href="https://atlas.hashicorp.com/hashicorp/boxes/precise64/versions/1.1.0/providers/virtualbox.box">https://atlas.hashicorp.com/hashicorp/boxes/precise64/versions/1.1.0/providers/virtualbox.box</a></li>
+</ul>
+<p>虽然<code>vagrant init hashicorp/precise64</code>可以直接下载box，但是感觉很慢，可以用百度盘或迅雷先下下来，再手动挂上去。</p>
+<h3 id="-">创建项目</h3>
+<p>首先将下好的<code>.box</code>文件添加到vagrant中：</p>
+<pre><code class="lang-bash">vagrant box add my-box <span class="hljs-symbol">file:</span>/<span class="hljs-regexp">//d</span><span class="hljs-symbol">:/path/to/file</span>.box
+</code></pre>
+<p>然后在项目文件夹下：</p>
+<pre><code class="lang-bash">vagrant init <span class="hljs-keyword">my</span>-box
+</code></pre>
+<p>vagrant本质上是用一种便捷方式连接了虚拟机，所以开发时要先开起虚拟机：</p>
+<pre><code class="lang-bash"><span class="hljs-attribute">vagrant up</span>
+</code></pre>
+<p>然后就可以连接虚拟机了：</p>
+<pre><code class="lang-bash"><span class="hljs-attribute">vagrant ssh</span>
+</code></pre>
+</div><footer><div class="comments-section"><div id="disqus_thread"><script>/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = 'tianqi'; // required: replace example with your forum shortname
+
+/* * * DON'T EDIT BELOW THIS LINE * * */
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script></div></div></footer></div><footer class="post-content-footer" flex-row="flex-row"><a class="prev" href="/posts/2017/CSS动画 vs web动画API"><label>Prev</label><p>CSS动画 vs web动画API</p></a></footer></article></main><footer id="home-footer">.copyright © 2015 by Tianqi</footer></div></body></html>
