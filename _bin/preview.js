@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const folder = process.argv[2]
+const folder = process.argv[2] || ""
 const fs = require('fs')
 const path = require('path')
 var mdFile = path.join(folder, "index.md");
@@ -11,7 +11,9 @@ if(!fs.existsSync(mdFile)) {
 var bs = require("browser-sync").create();
 bs.watch(mdFile).on("change", bs.reload);
 bs.init({
-    proxy: "localhost:8080"
+	port: 7000,
+	ui: {port: 7001},
+    proxy: "localhost:7230"
 });
 
 const koa = require('koa')
@@ -53,4 +55,4 @@ app.use(ctx => {
 	
 });
 
-app.listen(8080)
+app.listen(7230)

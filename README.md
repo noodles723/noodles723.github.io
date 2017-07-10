@@ -15,3 +15,5 @@ e.g: /posts, /photography, /about 都是生成的文件夹
 - render homepage // 渲染主页，还没想好怎么写，目前是直接copy了/list/index.html
 
 - push -m [git commit的message，没有的话会随机选句唐诗]
+
+- preview _draft/xxx/ // 可以实时预览

@@ -9,7 +9,8 @@
   "bin": {
     "render": "_bin/render.js",
     "push": "_bin/push.js",
-    "preview": "_bin/preview.js"
+    "preview": "_bin/preview.js",
+    "publish": "_bin/publish.js"
   },
   "author": "timi",
   "license": "ISC",
