@@ -32,7 +32,7 @@ var marked = require('marked').setOptions({
 var render = (mdFile) => {
 	var post = frontMatter.loadFront(mdFile);
 	post.__content = marked(post.__content);
-	let tmp = path.basename(folder).split('_')
+	let tmp = path.basename(folder).split('__')
 	post.title = tmp[1];
 	post.url = "/";
 	post.createtime = tmp[0];

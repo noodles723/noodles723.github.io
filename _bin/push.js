@@ -1,21 +1,8 @@
 #!/usr/bin/env node
+const argv = require("yargs").argv;
 const shell = require('shelljs');
-const folder = process.argv[2]
-const fs = require('fs')
-var mdFile = path.join(folder, "index.md");
-if(!fs.existsSync(folder)) {
-	console.log(`${folder} not exists`);
-	return;
-}
-
-var year = (new Date()).getFullYear();
-console.log(year)
-return
-var code = shell.exec("git add . && git commit -m "+message+" && git push origin master").code;
-if(code !== 0) {
-	shell.echo('Error: Git commit failed');
-	shell.exit(1);
-}
+const curl = require("curl");
+const max = 255;
 
 // push -m "git commit的message"
 // 没有 -m 的话，随便取句唐诗上传
