@@ -98,11 +98,75 @@ class MainActivity : AppCompatActivity() {
 }
 ```
 
+如果这里报错说`unresolved reference kotlinx`，则需要再project的build.gradle中加上：
+```js
+buildscript {
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlin_version"
+    }
+}
+```
+在module的build.gradle中加上：
+```js
+apply plugin: 'kotlin-android-extensions'
+```
+然后重新同步一下。
+
+# 其他的layout
+`RelativeLayout`定义子元素相对于其他子元素的位置。常用的一些属性：
+```js
+android:layout_toLeftOf="@+id/button_toast" //该组件位于引用组件的左方  
+android:layout_toRightOf="@+id/button_toast" //该组件位于引用组件的右方  
+android:layout_above="@+id/button_toast"     //该组件位于引用组件的上方  
+android:layout_below="@+id/button_toast"         //该组件位于引用组件的下方  
+android:layout_alignParentLeft="true"      //该组件是否对齐父组件的左端  
+android:layout_alignParentRight="true"     //该组件是否齐其父组件的右端  
+android:layout_alignParentTop="true"       //该组件是否对齐父组件的顶部  
+android:layout_alignParentBottom="true"    //该组件是否对齐父组件的底部  
+android:layout_centerInParent="true"       //该组件是否相对于父组件居中  
+android:layout_centerHorizontal="true"     //该组件是否横向居中  
+android:layout_centerVertical="true"       //该组件是否垂直居中
+```
 
 
+# TextView
+textView里引用的string里的单引号和双引号要加'\'，string里可以用`</b>`和`</i>`，textView加上属性`android:autoLink="web"`可自动识别string里的网址。
 
+通常大段的text可以用scrollView包起来，里面加个linearLayout来对文字排版：
+```xml
+<ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/article_subheading">
 
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical">
 
+          <TextView
+             android:id="@+id/article"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:autoLink="web"
+             android:lineSpacingExtra="5sp"
+             android:text="@string/article_text" />
+
+       </LinearLayout>
+
+    </ScrollView>
+```
+
+# 学习资源
+android官网的[api](https://developer.android.com/guide/index.html)和[示例](https://developer.android.com/samples/index.html)有很多资源，没事可以多去看看。
+
+官网[http://developer.android.com/index.html.](http://developer.android.com/index.html)里的文档分为三大类：
+- Design: all about Material Design
+- Develop: 各种技术文档
+- Distribute: 叫你写完代码后如何发布
+
+油管上的[官方channel](https://www.youtube.com/user/androiddevelopers)。
+[官方博客](https://www.blog.google/products/android/)
 
 
 
