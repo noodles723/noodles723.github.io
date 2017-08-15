@@ -230,4 +230,3 @@ class MainActivity : AppCompatActivity() {
 }
 ```
 
-# 用Image view当button
