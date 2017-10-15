@@ -1,0 +1,121 @@
+<html><head><title></title><meta name="keywords"/><meta name="description"/><meta charset="UTF-8"/><meta name="renderer" content="webkit"/><meta name="referrer" content="always"/><meta name="googlebot" content="NOODP"/><meta name="viewport" content="width=device-width,initial-scale=1.0,height=device-height,user-scalable=no,minimum-scale=1.0,maximum-scale=1.0"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="apple-mobile-web-app-status-bar-style" content="black"/><meta name="format-detection" content="telephone=no, email=no"/><meta name="robots" content="index,follow"/><meta http-equiv="Cache-Control" content="no-siteapp"/><meta name="renderer" content="webkit"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="HandheldFriendly" content="true"/><meta name="MobileOptimized" content="320"/><meta name="screen-orientation" content="portrait"/><meta name="x5-orientation" content="portrait"/><meta name="full-screen" content="yes"/><meta name="x5-fullscreen" content="true"/><meta name="browsermode" content="application"/><meta name="x5-page-mode" content="app"/><meta name="msapplication-tap-highlight" content="no"/><script>var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?1d0db9c3c2c6dc7d78ff8eac0ea41f6f";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();</script><link rel="stylesheet" href="/css/base.css"/><link rel="stylesheet" href="/css/post.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/github.min.css"/></head><body><h1 class="blog-logo"><a href="/" title="Home"><img src="/img/logo.png"/></a></h1><nav id="blog-header-nav"><ul class="nav-list"><li><a href="/list" class="nav-item hover-lighten" title="posts">Posts</a></li><li><a href="/photography" class="nav-item hover-lighten" title="photography">Photography</a></li><li><a href="/about" class="nav-item hover-lighten" title="about">About</a></li></ul></nav><div class="main-wrapper"><main id="main"><article id="post-content"><header class="post-content-header"><h1>android入门01</h1><span class="date">2017.08.04</span></header><div class="post-content-body"><div class="article-content"><p>记录一下自己的安卓学习过程
+学习的教程：<a href="https://google-developer-training.gitbooks.io/android-developer-fundamentals-course-practicals/content/en/Unit%201/11_p_hello_world.html">google官方的developer training book</a></p>
+<!-- more -->
+<h1 id="-">项目结构</h1>
+<pre><code class="lang-bash"><span class="hljs-params">-manifests</span>
+    |- AndroidManifest.<span class="hljs-built_in">xml</span> <span class="hljs-comment">// 描述app用到的所有components</span>
+<span class="hljs-params">-java</span>
+    |- com.example.admin.myapplication
+        |- MainActivity  <span class="hljs-comment">// 所有项目的主代码都在这个文件夹下</span>
+    |- com.example.admin.myapplication(androidTest)
+        |- ExampleInstrumentedTest <span class="hljs-comment">//测试文件</span>
+    |- com.example.admin.myapplication(test)
+        |- ExampleUnitTest <span class="hljs-comment">// 单元测试</span>
+<span class="hljs-params">-res</span>
+    |- drawable <span class="hljs-comment">//储存所有图片</span>
+    |- layout   <span class="hljs-comment">// 可以理解为html</span>
+    |- mipmap   <span class="hljs-comment">// 启动图标</span>
+    |- values
+        |- colors.<span class="hljs-built_in">xml</span>   <span class="hljs-comment">// 颜色</span>
+        |- dimens.<span class="hljs-built_in">xml</span>   <span class="hljs-comment">// 视图尺寸</span>
+        |- strings.<span class="hljs-built_in">xml</span>  <span class="hljs-comment">// 用于多语言</span>
+        |- styles.<span class="hljs-built_in">xml</span>   <span class="hljs-comment">// 有点像css</span>
+</code></pre>
+<h1 id="-">调试</h1>
+<p><code>Logcat</code>里打印了log信息，在代码中用</p>
+<pre><code class="lang-kotlin"><span class="hljs-keyword">import</span> android.util.<span class="hljs-keyword">Log</span>
+
+<span class="hljs-keyword">Log</span>.d(<span class="hljs-string">"tag info"</span>, <span class="hljs-string">"log string"</span>) 
+<span class="hljs-comment">// d - debug</span>
+<span class="hljs-comment">// e - error</span>
+<span class="hljs-comment">// w - warning</span>
+<span class="hljs-comment">// i - info</span>
+</code></pre>
+<h1 id="androidmanifest-xml">AndroidManifest.xml</h1>
+<pre><code class="lang-xml"><span class="hljs-meta">&lt;?</span>xml <span class="hljs-built_in">version</span>=<span class="hljs-string">"1.0"</span> encoding=<span class="hljs-string">"utf-8"</span><span class="hljs-meta">?&gt;</span><span class="hljs-comment">
+//安卓的namespace</span>
+&lt;manifest xmlns:android=<span class="hljs-string">"http://schemas.android.com/apk/res/android"</span>    
+   <span class="hljs-comment"> // 发布时的包名称</span>
+    package=<span class="hljs-string">"com.example.catteria.myapplication"</span> &gt;   
+
+    &lt;application
+        android:allowBackup=<span class="hljs-string">"true"</span> <span class="hljs-comment"> // 允许备份</span>
+        android:icon=<span class="hljs-string">"@mipmap/ic_launcher"</span> <span class="hljs-comment"> //启动的icon</span>
+        android:label=<span class="hljs-string">"@string/app_name"</span>   <span class="hljs-comment"> // app名称</span>
+        android:roundIcon=<span class="hljs-string">"@mipmap/ic_launcher_round"</span>  <span class="hljs-comment"> // 圆形的icon</span>
+        android:supportsRtl=<span class="hljs-string">"true"</span> <span class="hljs-comment"> // 允许从右到左的排列</span>
+        android:theme=<span class="hljs-string">"@style/AppTheme"</span> &gt;  <span class="hljs-comment"> // 样式</span>
+
+       <span class="hljs-comment"> // 定义activity，每个app至少有一个activity</span>
+        &lt;activity android:name=<span class="hljs-string">".MainActivity"</span> &gt;
+            &lt;intent-<span class="hljs-built_in">filter</span>&gt;
+               <span class="hljs-comment"> // action和category一起定义了activity启动时该干嘛</span>
+               <span class="hljs-comment"> // Start activity as the main entry point.</span>
+                &lt;action android:name=<span class="hljs-string">"android.intent.action.MAIN"</span> /&gt;
+               <span class="hljs-comment"> // 启动时最顶级的activity</span>
+                &lt;category android:name=<span class="hljs-string">"android.intent.category.LAUNCHER"</span> /&gt;
+            &lt;/intent-<span class="hljs-built_in">filter</span>&gt;
+        &lt;/activity&gt;
+    &lt;/application&gt;
+
+&lt;/manifest&gt;
+</code></pre>
+<h1 id="build-gradle">build.gradle</h1>
+<p>gradle是一个打包系统，详情可去看<a href="https://gradle.org/">官网</a>.
+<code>Gradle Scripts</code>文件夹下有几个build.gradle文件，<em>build.gradle(Project: xxx)</em>是项目层面的，<em>build.gradle(Module: app)</em>是模块层面的，它对应app文件夹下的内容：</p>
+<pre><code class="lang-js">apply <span class="hljs-string">plugin:</span> <span class="hljs-string">'com.android.application'</span>
+
+apply <span class="hljs-string">plugin:</span> <span class="hljs-string">'kotlin-android'</span>
+
+apply <span class="hljs-string">plugin:</span> <span class="hljs-string">'kotlin-android-extensions'</span>
+
+android {
+    compileSdkVersion <span class="hljs-number">26</span>
+    buildToolsVersion <span class="hljs-string">"26.0.0"</span>
+    <span class="hljs-comment">// 核心的设置，会覆盖manifest</span>
+    defaultConfig {
+        applicationId <span class="hljs-string">"com.example.catteria.study"</span>
+        minSdkVersion <span class="hljs-number">19</span>
+        targetSdkVersion <span class="hljs-number">26</span>
+        versionCode <span class="hljs-number">1</span>
+        versionName <span class="hljs-string">"1.0"</span>
+        testInstrumentationRunner <span class="hljs-string">"android.support.test.runner.AndroidJUnitRunner"</span>
+    }
+    <span class="hljs-comment">// 定义app如何被打包</span>
+    buildTypes {
+        <span class="hljs-comment">// 也可定义debug时的设置，默认没有</span>
+        release {
+            minifyEnabled <span class="hljs-literal">false</span>
+            proguardFiles getDefaultProguardFile(<span class="hljs-string">'proguard-android.txt'</span>), <span class="hljs-string">'proguard-rules.pro'</span>
+        }
+    }
+}
+
+<span class="hljs-comment">// 用其他库时需要修改这里的配置</span>
+dependencies {
+    implementation fileTree(<span class="hljs-string">dir:</span> <span class="hljs-string">'libs'</span>, <span class="hljs-string">include:</span> [<span class="hljs-string">'*.jar'</span>])
+    implementation<span class="hljs-string">"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"</span>
+    implementation <span class="hljs-string">'com.android.support:appcompat-v7:26.0.0-beta1'</span>
+    implementation <span class="hljs-string">'com.android.support.constraint:constraint-layout:1.0.2'</span>
+    testImplementation <span class="hljs-string">'junit:junit:4.12'</span>
+    androidTestImplementation <span class="hljs-string">'com.android.support.test:runner:0.5'</span>
+    androidTestImplementation <span class="hljs-string">'com.android.support.test.espresso:espresso-core:2.2.2'</span>
+}
+</code></pre>
+<h1 id="todo-">TODO 实体机测试</h1>
+</div><footer><div class="comments-section"><div id="disqus_thread"><script>/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = 'tianqi'; // required: replace example with your forum shortname
+
+/* * * DON'T EDIT BELOW THIS LINE * * */
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script></div></div></footer></div><footer class="post-content-footer" flex-row="flex-row"><a class="prev" href="/posts/2017/Nativescript入门教程"><label>Prev</label><p>Nativescript入门教程</p></a></footer></article></main><footer id="home-footer">.copyright © 2015 by Tianqi</footer></div></body></html>

@@ -1,0 +1,226 @@
+<html><head><title></title><meta name="keywords"/><meta name="description"/><meta charset="UTF-8"/><meta name="renderer" content="webkit"/><meta name="referrer" content="always"/><meta name="googlebot" content="NOODP"/><meta name="viewport" content="width=device-width,initial-scale=1.0,height=device-height,user-scalable=no,minimum-scale=1.0,maximum-scale=1.0"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="apple-mobile-web-app-status-bar-style" content="black"/><meta name="format-detection" content="telephone=no, email=no"/><meta name="robots" content="index,follow"/><meta http-equiv="Cache-Control" content="no-siteapp"/><meta name="renderer" content="webkit"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="HandheldFriendly" content="true"/><meta name="MobileOptimized" content="320"/><meta name="screen-orientation" content="portrait"/><meta name="x5-orientation" content="portrait"/><meta name="full-screen" content="yes"/><meta name="x5-fullscreen" content="true"/><meta name="browsermode" content="application"/><meta name="x5-page-mode" content="app"/><meta name="msapplication-tap-highlight" content="no"/><script>var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?1d0db9c3c2c6dc7d78ff8eac0ea41f6f";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();</script><link rel="stylesheet" href="/css/base.css"/><link rel="stylesheet" href="/css/post.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/github.min.css"/></head><body><h1 class="blog-logo"><a href="/" title="Home"><img src="/img/logo.png"/></a></h1><nav id="blog-header-nav"><ul class="nav-list"><li><a href="/list" class="nav-item hover-lighten" title="posts">Posts</a></li><li><a href="/photography" class="nav-item hover-lighten" title="photography">Photography</a></li><li><a href="/about" class="nav-item hover-lighten" title="about">About</a></li></ul></nav><div class="main-wrapper"><main id="main"><article id="post-content"><header class="post-content-header"><h1>android常用UI组件01</h1><span class="date">2017.08.14</span></header><div class="post-content-body"><div class="article-content"><p>一些UI组件的使用：spinner，alert，datepicker, timepicker。</p>
+<!-- more -->
+<h1 id="spinner">Spinner</h1>
+<p>选择框：</p>
+<pre><code class="lang-xml">// layout.xml
+<span class="hljs-tag">&lt;<span class="hljs-name">Spinner</span>
+    <span class="hljs-attr">android:id</span>=<span class="hljs-string">"@+id/label_spinner"</span>
+    <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">"wrap_content"</span>
+    <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">"wrap_content"</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">Spinner</span>&gt;</span>
+
+// strings.xml
+<span class="hljs-tag">&lt;<span class="hljs-name">string-array</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"labels_array"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">item</span>&gt;</span>Home<span class="hljs-tag">&lt;/<span class="hljs-name">item</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">item</span>&gt;</span>Work<span class="hljs-tag">&lt;/<span class="hljs-name">item</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">item</span>&gt;</span>Mobile<span class="hljs-tag">&lt;/<span class="hljs-name">item</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">item</span>&gt;</span>Other<span class="hljs-tag">&lt;/<span class="hljs-name">item</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">string-array</span>&gt;</span>
+</code></pre>
+<p><code>MainActivity</code>需要继承<code>AdapterView.OnItemSelectedListener</code>:</p>
+<pre><code class="lang-kotlin"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MainActivity</span> : <span class="hljs-type">AppCompatActivity</span></span>(), AdapterView.OnItemSelectedListener {
+    <span class="hljs-keyword">var</span> mSpinnerLabel = <span class="hljs-string">""</span>
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onNothingSelected</span><span class="hljs-params">(p0: <span class="hljs-type">AdapterView</span>&lt;*&gt;?)</span></span> { 
+        <span class="hljs-comment">// 没选中item时</span>
+    }
+
+    <span class="hljs-comment">// 主要在这里实现选中之后的逻辑</span>
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onItemSelected</span><span class="hljs-params">(p0: <span class="hljs-type">AdapterView</span>&lt;*&gt;, p1: <span class="hljs-type">View</span>, p2: <span class="hljs-type">Int</span>, p3: <span class="hljs-type">Long</span>)</span></span> {
+        mSpinnerLabel = p0.getItemAtPosition(p2).toString()
+    }
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onCreate</span><span class="hljs-params">(savedInstanceState: <span class="hljs-type">Bundle</span>?)</span></span> {
+        <span class="hljs-keyword">super</span>.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        <span class="hljs-comment">// spinner 绑定监听</span>
+        label_spinner.setOnItemSelectedListener(<span class="hljs-keyword">this</span>)
+
+        <span class="hljs-comment">// 新建一个adapter绑在spinner上</span>
+        <span class="hljs-comment">// simple_spinner_item和simple_spinner_dropdown_item是默认的组件，也可以用自定义的</span>
+        <span class="hljs-keyword">val</span> adapter = ArrayAdapter.createFromResource(<span class="hljs-keyword">this</span>, R.array.labels_array, android.R.layout.simple_spinner_item)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        label_spinner.setAdapter(adapter)
+    }
+}
+</code></pre>
+<h1 id="alert">Alert</h1>
+<p>alert不需要在layout中写东西，可以由一个button的onclick事件来触发弹出一个：</p>
+<pre><code class="lang-kotlin"><span class="hljs-comment">// 点击按钮后进到这里</span>
+<span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onClickShowAlert</span><span class="hljs-params">(view: <span class="hljs-type">View</span>)</span></span> {
+    <span class="hljs-comment">// 新建一个Alert</span>
+    <span class="hljs-keyword">val</span> myAlertBuilder = AlertDialog.Builder(<span class="hljs-keyword">this</span>)
+    myAlertBuilder.setTitle(<span class="hljs-string">"Alert"</span>)
+    myAlertBuilder.setMessage(<span class="hljs-string">"Click OK to continue, or Cancel to stop:"</span>)
+
+    myAlertBuilder.setPositiveButton(<span class="hljs-string">"OK"</span>) { dialog, which -&gt;
+        <span class="hljs-comment">// 点确定后</span>
+        Toast.makeText(applicationContext, <span class="hljs-string">"Pressed OK"</span>, Toast.LENGTH_SHORT).show()
+    }
+
+    myAlertBuilder.setNegativeButton(<span class="hljs-string">"Cancel"</span>) { dialog, which -&gt;
+        <span class="hljs-comment">// 点取消后</span>
+        Toast.makeText(applicationContext, <span class="hljs-string">"Pressed Cancel"</span>, Toast.LENGTH_SHORT).show()
+    }
+
+    <span class="hljs-comment">// 显示alert</span>
+    myAlertBuilder.show()
+}
+</code></pre>
+<h1 id="datepicker-timepicker">DatePicker, TimePicker</h1>
+<p>先简单写一个主页面：</p>
+<pre><code class="lang-xml"><span class="php"><span class="hljs-meta">&lt;?</span>xml version=<span class="hljs-string">"1.0"</span> encoding=<span class="hljs-string">"utf-8"</span><span class="hljs-meta">?&gt;</span></span>
+<span class="hljs-tag">&lt;<span class="hljs-name">LinearLayout</span> <span class="hljs-attr">xmlns:android</span>=<span class="hljs-string">"http://schemas.android.com/apk/res/android"</span>
+    <span class="hljs-attr">xmlns:tools</span>=<span class="hljs-string">"http://schemas.android.com/tools"</span>
+    <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">"match_parent"</span>
+    <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">"match_parent"</span>
+    <span class="hljs-attr">android:padding</span>=<span class="hljs-string">"16dp"</span>
+    <span class="hljs-attr">tools:context</span>=<span class="hljs-string">"tech.llc.social_dating.MainActivity"</span>
+    <span class="hljs-attr">android:orientation</span>=<span class="hljs-string">"vertical"</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">TextView</span>
+        <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">"match_parent"</span>
+        <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">"wrap_content"</span>
+        <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Choose the date and time: "</span>
+        /&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">RelativeLayout</span>
+        <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">"match_parent"</span>
+        <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">"wrap_content"</span>&gt;</span>
+
+        <span class="hljs-tag">&lt;<span class="hljs-name">Button</span>
+            <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">"wrap_content"</span>
+            <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">"wrap_content"</span>
+            <span class="hljs-attr">android:id</span>=<span class="hljs-string">"@+id/button_date"</span>
+            <span class="hljs-attr">android:layout_marginTop</span>=<span class="hljs-string">"12dp"</span>
+            <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Date"</span>
+            <span class="hljs-attr">android:onClick</span>=<span class="hljs-string">"showDatePickerDialog"</span>
+            /&gt;</span>
+
+        <span class="hljs-tag">&lt;<span class="hljs-name">Button</span>
+            <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">"wrap_content"</span>
+            <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">"wrap_content"</span>
+            <span class="hljs-attr">android:id</span>=<span class="hljs-string">"@+id/button_time"</span>
+            <span class="hljs-attr">android:layout_marginTop</span>=<span class="hljs-string">"12dp"</span>
+            <span class="hljs-attr">android:layout_alignBottom</span>=<span class="hljs-string">"@id/button_date"</span>
+            <span class="hljs-attr">android:layout_toRightOf</span>=<span class="hljs-string">"@id/button_date"</span>
+            <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Time"</span>
+            <span class="hljs-attr">android:onClick</span>=<span class="hljs-string">"showTimePickerDialog"</span>
+            /&gt;</span>
+
+    <span class="hljs-tag">&lt;/<span class="hljs-name">RelativeLayout</span>&gt;</span>
+
+<span class="hljs-tag">&lt;/<span class="hljs-name">LinearLayout</span>&gt;</span>
+</code></pre>
+<p>点<code>File &gt; New &gt; Fragment &gt; Fragment(Blank)</code>新建一个fragment，三个勾都可以去掉，继承一个DialogFragment:</p>
+<pre><code class="lang-kotlin"><span class="hljs-keyword">import</span> android.app.DatePickerDialog
+<span class="hljs-keyword">import</span> android.app.Dialog
+<span class="hljs-keyword">import</span> java.util.Calendar
+<span class="hljs-keyword">import</span> android.os.Bundle
+<span class="hljs-keyword">import</span> android.support.v4.app.DialogFragment
+<span class="hljs-keyword">import</span> android.support.v4.app.Fragment
+<span class="hljs-keyword">import</span> android.widget.DatePicker
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DatePickerFragment</span> : <span class="hljs-type">DialogFragment</span></span>(), DatePickerDialog.OnDateSetListener {
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onCreateDialog</span><span class="hljs-params">(savedInstanceState: <span class="hljs-type">Bundle</span>?)</span></span>: Dialog {
+        <span class="hljs-keyword">val</span> c = Calendar.getInstance()
+        <span class="hljs-keyword">val</span> year = c.<span class="hljs-keyword">get</span>(Calendar.YEAR)
+        <span class="hljs-keyword">val</span> month = c.<span class="hljs-keyword">get</span>(Calendar.MONTH)
+        <span class="hljs-keyword">val</span> day = c.<span class="hljs-keyword">get</span>(Calendar.DAY_OF_MONTH)
+
+        <span class="hljs-keyword">return</span> DatePickerDialog(activity, <span class="hljs-keyword">this</span>, year, month, day)
+    }
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onDateSet</span><span class="hljs-params">(view: <span class="hljs-type">DatePicker</span>?, year: <span class="hljs-type">Int</span>, month: <span class="hljs-type">Int</span>, day: <span class="hljs-type">Int</span>)</span></span> {
+        <span class="hljs-keyword">val</span> activity = activity <span class="hljs-keyword">as</span> MainActivity
+        activity.processDatePickerResult(year, month, day)
+    }
+}
+</code></pre>
+<p>同理写一个TimeFragment:</p>
+<pre><code class="lang-kotlin"><span class="hljs-keyword">import</span> android.app.Dialog
+<span class="hljs-keyword">import</span> android.app.TimePickerDialog
+<span class="hljs-keyword">import</span> java.util.Calendar
+<span class="hljs-keyword">import</span> android.os.Bundle
+<span class="hljs-keyword">import</span> android.support.v4.app.DialogFragment
+<span class="hljs-keyword">import</span> android.support.v4.app.Fragment
+<span class="hljs-keyword">import</span> android.text.format.DateFormat
+<span class="hljs-keyword">import</span> android.widget.TimePicker
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TimePickerFragment</span> : <span class="hljs-type">DialogFragment</span></span>(), TimePickerDialog.OnTimeSetListener {
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onCreateDialog</span><span class="hljs-params">(savedInstanceState: <span class="hljs-type">Bundle</span>?)</span></span>: Dialog {
+        <span class="hljs-keyword">val</span> c = Calendar.getInstance()
+        <span class="hljs-keyword">val</span> hour = c.<span class="hljs-keyword">get</span>(Calendar.HOUR_OF_DAY)
+        <span class="hljs-keyword">val</span> minute = c.<span class="hljs-keyword">get</span>(Calendar.MINUTE)
+
+        <span class="hljs-keyword">return</span> TimePickerDialog(activity, <span class="hljs-keyword">this</span>, hour, minute, DateFormat.is24HourFormat(activity))
+    }
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onTimeSet</span><span class="hljs-params">(view: <span class="hljs-type">TimePicker</span>, hourOfDay: <span class="hljs-type">Int</span>, minute: <span class="hljs-type">Int</span>)</span></span> {
+        <span class="hljs-keyword">val</span> activity = activity <span class="hljs-keyword">as</span> MainActivity
+        activity.processTimePickerResult(hourOfDay, minute)
+    }
+
+}
+</code></pre>
+<p>再在MainActivity里添加这两个dialog：</p>
+<pre><code class="lang-kotlin"><span class="hljs-keyword">import</span> android.support.v7.app.AppCompatActivity
+<span class="hljs-keyword">import</span> android.os.Bundle
+<span class="hljs-keyword">import</span> android.view.View
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MainActivity</span> : <span class="hljs-type">AppCompatActivity</span></span>() {
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onCreate</span><span class="hljs-params">(savedInstanceState: <span class="hljs-type">Bundle</span>?)</span></span> {
+        <span class="hljs-keyword">super</span>.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">showDatePickerDialog</span><span class="hljs-params">(v: <span class="hljs-type">View</span>)</span></span> {
+        <span class="hljs-keyword">val</span> newFragment = DatePickerFragment()
+        newFragment.show(supportFragmentManager, getString(R.string.date_picker))
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">showTimePickerDialog</span><span class="hljs-params">(view: <span class="hljs-type">View</span>)</span></span> {
+        <span class="hljs-keyword">val</span> newFragment = TimePickerFragment()
+        newFragment.show(supportFragmentManager, getString(R.string.time_picker))
+    }
+
+    <span class="hljs-comment">// 选中date后的回调</span>
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">processDatePickerResult</span><span class="hljs-params">(year: <span class="hljs-type">Int</span>, month: <span class="hljs-type">Int</span>, day: <span class="hljs-type">Int</span>)</span></span> {
+        <span class="hljs-keyword">val</span> month_string = Integer.toString(month + <span class="hljs-number">1</span>)
+        <span class="hljs-keyword">val</span> day_string = Integer.toString(day)
+        <span class="hljs-keyword">val</span> year_string = Integer.toString(year)
+        <span class="hljs-comment">// Assign the concatenated strings to dateMessage.</span>
+        <span class="hljs-keyword">val</span> dateMessage = month_string + <span class="hljs-string">"/"</span> + day_string + <span class="hljs-string">"/"</span> + year_string
+        Toast.makeText(<span class="hljs-keyword">this</span>, <span class="hljs-string">"date:"</span> + dateMessage,
+                Toast.LENGTH_SHORT).show()
+    }
+
+    <span class="hljs-comment">// 选中time后的回调</span>
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">processTimePickerResult</span><span class="hljs-params">(hourOfDay: <span class="hljs-type">Int</span>, minute: <span class="hljs-type">Int</span>)</span></span> {
+        <span class="hljs-keyword">val</span> hour_string = Integer.toString(hourOfDay)
+        <span class="hljs-keyword">val</span> minute_string = Integer.toString(minute)
+        <span class="hljs-keyword">val</span> timeMessage = hour_string + <span class="hljs-string">":"</span> + minute_string
+        Toast.makeText(<span class="hljs-keyword">this</span>, <span class="hljs-string">"time: "</span> + timeMessage,
+                Toast.LENGTH_SHORT).show()
+    }
+}
+</code></pre>
+</div><footer><div class="comments-section"><div id="disqus_thread"><script>/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = 'tianqi'; // required: replace example with your forum shortname
+
+/* * * DON'T EDIT BELOW THIS LINE * * */
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script></div></div></footer></div><footer class="post-content-footer" flex-row="flex-row"><a class="prev" href="/posts/2017/android后端通信"><label>Prev</label><p>android后端通信</p></a></footer></article></main><footer id="home-footer">.copyright © 2015 by Tianqi</footer></div></body></html>

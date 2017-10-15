@@ -1,0 +1,160 @@
+<html><head><title></title><meta name="keywords"/><meta name="description"/><meta charset="UTF-8"/><meta name="renderer" content="webkit"/><meta name="referrer" content="always"/><meta name="googlebot" content="NOODP"/><meta name="viewport" content="width=device-width,initial-scale=1.0,height=device-height,user-scalable=no,minimum-scale=1.0,maximum-scale=1.0"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="apple-mobile-web-app-status-bar-style" content="black"/><meta name="format-detection" content="telephone=no, email=no"/><meta name="robots" content="index,follow"/><meta http-equiv="Cache-Control" content="no-siteapp"/><meta name="renderer" content="webkit"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="HandheldFriendly" content="true"/><meta name="MobileOptimized" content="320"/><meta name="screen-orientation" content="portrait"/><meta name="x5-orientation" content="portrait"/><meta name="full-screen" content="yes"/><meta name="x5-fullscreen" content="true"/><meta name="browsermode" content="application"/><meta name="x5-page-mode" content="app"/><meta name="msapplication-tap-highlight" content="no"/><script>var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?1d0db9c3c2c6dc7d78ff8eac0ea41f6f";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();</script><link rel="stylesheet" href="/css/base.css"/><link rel="stylesheet" href="/css/post.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/github.min.css"/></head><body><h1 class="blog-logo"><a href="/" title="Home"><img src="/img/logo.png"/></a></h1><nav id="blog-header-nav"><ul class="nav-list"><li><a href="/list" class="nav-item hover-lighten" title="posts">Posts</a></li><li><a href="/photography" class="nav-item hover-lighten" title="photography">Photography</a></li><li><a href="/about" class="nav-item hover-lighten" title="about">About</a></li></ul></nav><div class="main-wrapper"><main id="main"><article id="post-content"><header class="post-content-header"><h1>android入门02</h1><span class="date">2017.08.05</span></header><div class="post-content-body"><div class="article-content"><p>写第一个交互式UI</p>
+<!-- more -->
+<h1 id="layout">layout</h1>
+<p>打开<code>res/layout/activity_main.xml</code>，切换下方的<code>Design</code>到<code>Text</code>打开xml文件。
+它默认是一个<code>ConstraintLayout</code>我们可以先把它改成一个<code>LinearLayout</code>，这是最简单，运行速度最快的layout，其实写这个xml和写html很像，做过前端的看看就懂了。</p>
+<p>一个<code>LinearLayout</code>里有两个按钮，一行文本的xml长这样：</p>
+<pre><code class="lang-xml"><span class="hljs-meta">&lt;?</span>xml <span class="hljs-built_in">version</span>=<span class="hljs-string">"1.0"</span> encoding=<span class="hljs-string">"utf-8"</span><span class="hljs-meta">?&gt;</span>
+&lt;LinearLayout xmlns:android=<span class="hljs-string">"http://schemas.android.com/apk/res/android"</span>
+    xmlns:tools=<span class="hljs-string">"http://schemas.android.com/tools"</span>
+   <span class="hljs-comment"> // width, height的可选值有：</span>
+   <span class="hljs-comment"> // match_parent - 同父节点</span>
+   <span class="hljs-comment"> // wrap_content - 刚好包住子结点</span>
+   <span class="hljs-comment"> // 24dp - 绝对像素值</span>
+    android:layout_width=<span class="hljs-string">"match_parent"</span>
+    android:layout_height=<span class="hljs-string">"match_parent"</span>
+    android:orientation=<span class="hljs-string">"vertical"</span> <span class="hljs-comment"> // or horizontal</span>
+    tools:context=<span class="hljs-string">"com.example.catteria.study.MainActivity"</span>&gt;
+
+    &lt;Button
+        android:id=<span class="hljs-string">"@+id/button_toast"</span>
+        android:layout_width=<span class="hljs-string">"match_parent"</span>
+        android:layout_height=<span class="hljs-string">"wrap_content"</span>
+        android:<span class="hljs-keyword">text</span>=<span class="hljs-string">"Toast"</span> /&gt;
+
+    &lt;TextView
+        android:id=<span class="hljs-string">"@+id/show_count"</span>
+        android:layout_width=<span class="hljs-string">"match_parent"</span>
+        android:layout_height=<span class="hljs-string">"wrap_content"</span>
+        android:<span class="hljs-keyword">text</span>=<span class="hljs-string">"0"</span> /&gt;
+
+    &lt;Button
+        android:id=<span class="hljs-string">"@+id/button_count"</span>
+        android:layout_width=<span class="hljs-string">"match_parent"</span>
+        android:layout_height=<span class="hljs-string">"wrap_content"</span>
+        android:<span class="hljs-keyword">text</span>=<span class="hljs-string">"Count"</span> /&gt;
+&lt;/LinearLayout&gt;
+</code></pre>
+<h1 id="string-resource">string resource</h1>
+<p>安卓里的静态string推荐写在<code>strings.xml</code>里，方便统一管理和多语言拓展。
+打开<code>activity_main.xml</code>，在<code>android:text=&quot;Count&quot;</code>的text部分按<code>alt+enter</code>选<code>extracting string resource</code>，然后自己编辑一个id点ok， 就自动在<code>strings.xml</code>里生成了相对应的string。</p>
+<p>现在<code>res/values/strings.xml</code>应该长这样：</p>
+<pre><code class="lang-xml">&lt;resources&gt;
+    &lt;<span class="hljs-built_in">string</span> <span class="hljs-built_in">name</span>=<span class="hljs-string">"app_name"</span>&gt;study&lt;/<span class="hljs-built_in">string</span>&gt;
+    &lt;<span class="hljs-built_in">string</span> <span class="hljs-built_in">name</span>=<span class="hljs-string">"button_label_toast"</span>&gt;Toast&lt;/<span class="hljs-built_in">string</span>&gt;
+    &lt;<span class="hljs-built_in">string</span> <span class="hljs-built_in">name</span>=<span class="hljs-string">"count_initial_value"</span>&gt;<span class="hljs-number">0</span>&lt;/<span class="hljs-built_in">string</span>&gt;
+    &lt;<span class="hljs-built_in">string</span> <span class="hljs-built_in">name</span>=<span class="hljs-string">"button_label_count"</span>&gt;Count&lt;/<span class="hljs-built_in">string</span>&gt;
+&lt;/resources&gt;
+</code></pre>
+<p>其实dimen和color根string类似也可以统一管理，这里略过了。</p>
+<h1 id="gravity">gravity</h1>
+<p><code>android:layout_gravity</code>定义如何与父节点对齐。
+<code>android:layout_weight</code>类似于<code>flex</code>，用于定义布局权重。
+<code>android:gravity</code>定义元素内部的view相对于自身的对其。</p>
+<h1 id="-">点击事件</h1>
+<p>在button上加上<code>android:onClick=&quot;showToast&quot;</code>来绑定点击事件。
+在<code>MainActivity.kt</code>里来定义事件控制函数：</p>
+<pre><code class="lang-kotlin"><span class="hljs-keyword">package</span> com.example.catteria.study
+
+<span class="hljs-keyword">import</span> android.support.v7.app.AppCompatActivity
+<span class="hljs-keyword">import</span> android.os.Bundle
+<span class="hljs-keyword">import</span> android.view.View
+<span class="hljs-keyword">import</span> android.widget.Toast
+<span class="hljs-keyword">import</span> kotlinx.android.synthetic.main.activity_main.*
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MainActivity</span> : <span class="hljs-type">AppCompatActivity</span></span>() {
+    <span class="hljs-keyword">var</span> mCount: <span class="hljs-built_in">Int</span> = <span class="hljs-number">0</span>
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onCreate</span><span class="hljs-params">(savedInstanceState: <span class="hljs-type">Bundle</span>?)</span></span> {
+        <span class="hljs-keyword">super</span>.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">countUp</span><span class="hljs-params">(view: <span class="hljs-type">View</span>)</span></span> {
+        mCount++
+        show_count.text = mCount.toString()     <span class="hljs-comment">// 直接用id来调用</span>
+
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">showToast</span><span class="hljs-params">(view: <span class="hljs-type">View</span>)</span></span> {
+        <span class="hljs-keyword">val</span> toast: Toast = Toast.makeText(<span class="hljs-keyword">this</span>, getString(R.string.toast_message), Toast.LENGTH_LONG)   <span class="hljs-comment">// 显示一个toast</span>
+        toast.show()
+    }
+}
+</code></pre>
+<p>如果这里报错说<code>unresolved reference kotlinx</code>，则需要再project的build.gradle中加上：</p>
+<pre><code class="lang-js"><span class="hljs-section">buildscript</span> {
+    <span class="hljs-section">dependencies</span> {
+        <span class="hljs-attribute">classpath</span> <span class="hljs-string">"org.jetbrains.kotlin:kotlin-android-extensions:<span class="hljs-variable">$kotlin_version</span>"</span>
+    }
+}
+</code></pre>
+<p>在module的build.gradle中加上：</p>
+<pre><code class="lang-js">apply <span class="hljs-string">plugin:</span> <span class="hljs-string">'kotlin-android-extensions'</span>
+</code></pre>
+<p>然后重新同步一下。</p>
+<h1 id="-layout">其他的layout</h1>
+<p><code>RelativeLayout</code>定义子元素相对于其他子元素的位置。常用的一些属性：</p>
+<pre><code class="lang-js"><span class="hljs-symbol">android:</span>layout_toLeftOf=<span class="hljs-string">"@+id/button_toast"</span> <span class="hljs-comment">//该组件位于引用组件的左方  </span>
+<span class="hljs-symbol">android:</span>layout_toRightOf=<span class="hljs-string">"@+id/button_toast"</span> <span class="hljs-comment">//该组件位于引用组件的右方  </span>
+<span class="hljs-symbol">android:</span>layout_above=<span class="hljs-string">"@+id/button_toast"</span>     <span class="hljs-comment">//该组件位于引用组件的上方  </span>
+<span class="hljs-symbol">android:</span>layout_below=<span class="hljs-string">"@+id/button_toast"</span>         <span class="hljs-comment">//该组件位于引用组件的下方  </span>
+<span class="hljs-symbol">android:</span>layout_alignParentLeft=<span class="hljs-string">"true"</span>      <span class="hljs-comment">//该组件是否对齐父组件的左端  </span>
+<span class="hljs-symbol">android:</span>layout_alignParentRight=<span class="hljs-string">"true"</span>     <span class="hljs-comment">//该组件是否齐其父组件的右端  </span>
+<span class="hljs-symbol">android:</span>layout_alignParentTop=<span class="hljs-string">"true"</span>       <span class="hljs-comment">//该组件是否对齐父组件的顶部  </span>
+<span class="hljs-symbol">android:</span>layout_alignParentBottom=<span class="hljs-string">"true"</span>    <span class="hljs-comment">//该组件是否对齐父组件的底部  </span>
+<span class="hljs-symbol">android:</span>layout_centerInParent=<span class="hljs-string">"true"</span>       <span class="hljs-comment">//该组件是否相对于父组件居中  </span>
+<span class="hljs-symbol">android:</span>layout_centerHorizontal=<span class="hljs-string">"true"</span>     <span class="hljs-comment">//该组件是否横向居中  </span>
+<span class="hljs-symbol">android:</span>layout_centerVertical=<span class="hljs-string">"true"</span>       <span class="hljs-comment">//该组件是否垂直居中</span>
+</code></pre>
+<h1 id="textview">TextView</h1>
+<p>textView里引用的string里的单引号和双引号要加’\’，string里可以用<code>&lt;/b&gt;</code>和<code>&lt;/i&gt;</code>，textView加上属性<code>android:autoLink=&quot;web&quot;</code>可自动识别string里的网址。</p>
+<p>通常大段的text可以用scrollView包起来，里面加个linearLayout来对文字排版：</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">ScrollView</span>
+        <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">"wrap_content"</span>
+        <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">"wrap_content"</span>
+        <span class="hljs-attr">android:layout_below</span>=<span class="hljs-string">"@id/article_subheading"</span>&gt;</span>
+
+        <span class="hljs-tag">&lt;<span class="hljs-name">LinearLayout</span>
+          <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">"match_parent"</span>
+          <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">"wrap_content"</span>
+          <span class="hljs-attr">android:orientation</span>=<span class="hljs-string">"vertical"</span>&gt;</span>
+
+          <span class="hljs-tag">&lt;<span class="hljs-name">TextView</span>
+             <span class="hljs-attr">android:id</span>=<span class="hljs-string">"@+id/article"</span>
+             <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">"wrap_content"</span>
+             <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">"wrap_content"</span>
+             <span class="hljs-attr">android:autoLink</span>=<span class="hljs-string">"web"</span>
+             <span class="hljs-attr">android:lineSpacingExtra</span>=<span class="hljs-string">"5sp"</span>
+             <span class="hljs-attr">android:text</span>=<span class="hljs-string">"@string/article_text"</span> /&gt;</span>
+
+       <span class="hljs-tag">&lt;/<span class="hljs-name">LinearLayout</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;/<span class="hljs-name">ScrollView</span>&gt;</span>
+</code></pre>
+<h1 id="-">学习资源</h1>
+<p>android官网的<a href="https://developer.android.com/guide/index.html">api</a>和<a href="https://developer.android.com/samples/index.html">示例</a>有很多资源，没事可以多去看看。</p>
+<p>官网<a href="http://developer.android.com/index.html">http://developer.android.com/index.html.</a>里的文档分为三大类：</p>
+<ul>
+<li>Design: all about Material Design</li>
+<li>Develop: 各种技术文档</li>
+<li>Distribute: 叫你写完代码后如何发布</li>
+</ul>
+<p>油管上的<a href="https://www.youtube.com/user/androiddevelopers">官方channel</a>。
+<a href="https://www.blog.google/products/android/">官方博客</a></p>
+</div><footer><div class="comments-section"><div id="disqus_thread"><script>/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = 'tianqi'; // required: replace example with your forum shortname
+
+/* * * DON'T EDIT BELOW THIS LINE * * */
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script></div></div></footer></div><footer class="post-content-footer" flex-row="flex-row"><a class="prev" href="/posts/2017/android入门01"><label>Prev</label><p>android入门01</p></a></footer></article></main><footer id="home-footer">.copyright © 2015 by Tianqi</footer></div></body></html>

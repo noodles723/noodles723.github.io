@@ -30,3 +30,6 @@ material design的字体颜色如下：
 <color name="disabledLightText">#80ffffff</color>
 <color name="dividersLight">#1effffff</color>
 ```
+
+## 给view添加ripple effect
+属性里加上`android:foreground="?attr/selectableItemBackground"`即可
