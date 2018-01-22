@@ -114,3 +114,5 @@ if (inv.hasPurchase("android.test.purchased")) {
 # 服务端购买验证
 
 developer account -> api access
+
+{"packageName":"tech.llc.s","orderId":"transactionId.android.test.purchased","productId":"android.test.purchased","developerPayload":"","purchaseTime":0,"purchaseState":0,"purchaseToken":"inapp:tech.llc.s:android.test.purchased"}
