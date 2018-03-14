@@ -1,0 +1,78 @@
+.product-wrapper
+  width 70%
+  align-items flex-end
+  position relative
+  overflow visible
+  .image-wrapper
+    position relative
+    width 100%
+    .background-img
+      position relative
+      display block
+    .product
+      position absolute
+      bottom -40px
+      width 40%
+    &.jiating
+      padding-left 10%
+      .product
+        left 0px
+    &.bianxie
+      padding-right 10%
+      .product
+        right -5%
+  .text-wrapper
+    h3
+      margin 12px 0px
+      font-size 20px
+    &.jiating
+      text-align right
+      width 60%
+    &.bianxie
+      width 70%
+  .buy-btn
+    font-size 16px
+    margin 20px 0px
+    width 160px
+    transition all .3s ease-in-out
+    height 40px
+    line-height 40px
+    color #4dd142
+    border-radius 4px
+    border 1px solid #4dd142
+    background #fff
+    cursor pointer
+    text-align center
+    &:hover
+      color #fff
+      background #4dd142
+
+.contact-us
+  justify-content space-between
+  margin-bottom 48px
+  position relative
+  #location-wrapper
+    width 60%
+    max-width 100%
+    padding-bottom 40%
+    margin-right 64px
+    &:before
+      postion absolute
+      width 100%
+      padding-bottom 60%
+  .info-wrapper
+    flex-grow 1
+    h3
+      margin 18px 0px
+    p
+      line-height 2.4em
+
+@media (max-width: 600px)
+  .product-wrapper
+    width 100%
+  .contact-us
+    flex-flow column
+    #location-wrapper
+      width 90%
+      margin 0px
+      padding-bottom 55%

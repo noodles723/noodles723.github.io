@@ -1,0 +1,77 @@
+#main-header
+  height 64px
+  width 100%
+  padding 0 32px
+  display flex
+  flex-flow row nowrap
+  justify-content center
+  align-items center
+  .container
+    justify-content space-between
+    .logo
+      display: inline-block
+      height: 100%
+      width: auto
+      &>img
+        display block
+        height 100%
+  .menu-wrapper
+    height: 100%
+    position: relative
+    .menu
+      display: flex
+      flex-flow row nowrap
+      justify-content flex-end
+      align-items center
+      font-size: 16px
+      height: 100%
+      &>li
+        display block
+        height: 100%
+        padding 0px 24px
+        letter-spacing 2px
+        line-height 64px
+        transition all .5s
+        border-bottom: 3px solid #fff
+        &.selected, &:hover
+          color: #66d37e
+          border-color: #66d37e
+
+@media (max-width: 600px)
+  #main-header
+    .container
+      width 100%
+      margin 0px
+    .menu-wrapper
+      width 32px
+      height 32px
+      background url("./images/menu-list.png")
+      background-repeat no-repeat
+      background-size cover
+      cursor pointer
+      &.open .menu
+        height auto
+        box-shadow 1px 1px 2px 2px #DDE2EB
+        border 1px solid #DDE2EB
+      .menu
+        overflow hidden
+        height 0px
+        position absolute
+        right 0px
+        top 105%
+        width 120px
+        flex-flow column nowrap
+        justify-content flex-start
+        z-index 100
+        background: #fff
+        &>li
+          display block
+          height 48px
+          width 100%
+          padding 0px 24px
+          letter-spacing 1px
+          line-height 48px
+          border-bottom: 1px solid #DDE2EB !important
+          &.selected
+            color: #66d37e
+

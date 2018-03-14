@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <title>栢甜-100%天然甜</title>
+  <meta name="keywords" content="康甜生物，北京康甜生物科技有限公司，栢甜, 康甜, 代糖, 0卡, 无热量, 天然,甜,糖" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/index.css">
+
+  <link rel="icon" type="image/png" href="images/favicon.ico">
+</head>
+<body>
+<header id="main-header">
+  <div class="container" flex-row>
+    <a href="index.html" class="logo">
+      <img src="./images/logo.png" alt="">
+    </a>
+    <div class="menu-wrapper">
+      <ul class="menu">
+        <li><a href="index.html">产品介绍</a></li>
+        <li><a href="about.html">关于栢甜</a></li>
+        <li class="selected"><a href="blog.html">栢甜圈</a></li>
+        <li><a href="">购买</a></li>
+      </ul>
+    </div>
+  </div>
+</header>
+  <main flex-column id="blog">
+    <section class="container">
+      <h2>栢甜圈</h2>
+      <div class="blog-wrapper">
+        <a class="blog-item" flex-column href="https://mp.weixin.qq.com/s?__biz=MzA3ODEzMjg5Mg==&mid=2651636610&idx=2&sn=245bb104047ec4975f8e8113c3690f9e" target="_blank">
+          <div class="image-wrapper">
+            <img src="./images/blog_01.png" alt="">
+          </div>
+          <p>AdMaster&腾讯：《年轻洞察白皮书》揭示年轻人品牌态度</p>
+        </a>
+        <a class="blog-item" flex-column href="https://mp.weixin.qq.com/s?__biz=MzI5NzEyNjk2Mg==&mid=2650607629&idx=1&sn=349378dd8c75e902d593c65d756cd983" target="_blank">
+          <div class="image-wrapper">
+            <img src="./images/blog_02.png" alt="">
+          </div>
+          <p>为了揭露糖的真相，他连续60天每天吃糖40勺，最后…</p>
+        </a>
+        <a class="blog-item" flex-column href="https://mp.weixin.qq.com/s?__biz=MzA3ODEzMjg5Mg==&mid=2651643249&idx=1&sn=6cfd13a106a018c044701008a24946ab" target="_blank">
+          <div class="image-wrapper">
+            <img src="./images/blog_03.png" alt="">
+          </div>
+          <p>2017全球冰淇淋市场回顾：这些趋势会蔓延到2018吗？</p>
+        </a>
+        <a class="blog-item" flex-column href="https://www.toutiao.com/a6471108003813655053/" target="_blank">
+          <div class="image-wrapper">
+            <img src="./images/blog_04.png" alt="">
+          </div>
+          <p>一天吃糖超过40克竟然有这么多潜在危害</p>
+        </a>
+        <a class="blog-item" flex-column href="https://www.toutiao.com/a6436850414024393218" target="_blank">
+          <div class="image-wrapper">
+            <img src="./images/blog_05.png" alt="">
+          </div>
+          <p>比起抽烟，吃糖的危害更大，世卫组织都急了</p>
+        </a>
+        <a class="blog-item" flex-column href="https://www.ys137.com/tnb/1628134.html" target="_blank">
+          <div class="image-wrapper">
+            <img src="./images/blog_06.png" alt="">
+          </div>
+          <p>罗汉果对糖尿病有什么好处和坏处</p>
+        </a>
+        <a class="blog-item" flex-column href="https://www.toutiao.com/a6472933611568890382" target="_blank">
+          <div class="image-wrapper">
+            <img src="./images/blog_07.png" alt="">
+          </div>
+          <p>一个吃糖，一个吃脂肪，最后到底谁变胖？</p>
+        </a>
+        <a class="blog-item" flex-column href="https://www.toutiao.com/a6476347953890984462" target="_blank">
+          <div class="image-wrapper">
+            <img src="./images/blog_08.png" alt="">
+          </div>
+          <p>孕期乱吃糖有那么大危害？胎儿居然还会变笨？</p>
+        </a>
+      </div>
+    </section>
+  </main>
+  <footer id="main-footer" flex-column>
+    <div class="container" flex-row>
+      <article class="contact-method">
+        <h4>联系方式</h4>
+        <p>电话：400-000000</p>
+        <p>邮箱：hello@healthysweet.cn</p>
+        <p>地址：北京市石景山区紫御长安1006室</p>
+      </article>
+      <article class="about-us">
+        <h4>关于我们</h4>
+      </article>
+      <article class="other-platform">
+        <h4>关注我们</h4>
+        <img src="./images/qrcode.png" class="qr-code">
+      </article>
+    </div>
+    <p class="copy-right">2017 栢甜(BETTY) 版权所有，京ICP备：15041940号-1</p>
+  </footer>
+<script>
+    document.querySelector('.menu-wrapper').addEventListener("click", function(event) {
+        if(document.body.offsetWidth > 600) return;
+        if(event.target.classList.contains("open")) {
+            event.target.classList.remove("open");
+        } else {
+            event.target.classList.add("open");
+        }
+    });
+</script>
+</body>
+</html>

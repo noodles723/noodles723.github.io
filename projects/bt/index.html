@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <title>栢甜-100%天然甜</title>
+  <meta name="keywords" content="康甜生物，北京康甜生物科技有限公司，栢甜, 康甜, 代糖, 0卡, 无热量, 天然,甜,糖" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/index.css">
+
+  <link rel="icon" type="image/png" href="./images/favicon.ico">
+</head>
+<body>
+  <header id="main-header">
+    <div class="container" flex-row>
+      <a href="index.html" class="logo">
+        <img src="./images/logo.png" alt="">
+      </a>
+      <div class="menu-wrapper">
+        <ul class="menu">
+          <li class="selected"><a href="index.html">产品介绍</a></li>
+          <li><a href="about.html">关于栢甜</a></li>
+          <li><a href="blog.html">栢甜圈</a></li>
+          <li><a href="">购买</a></li>
+        </ul>
+      </div>
+    </div>
+  </header>
+  <main flex-column>
+    <section id="carousel">
+      <ul class="slides">
+        <li class="slide slide-1" style="background-image: url(./images/banner1.jpg)">
+          <div class="text-wrapper">
+            <h3>100% 天然</h3>
+            <strong>零卡路里，低GI，甜味纯正，代替白砂糖</strong>
+          </div>
+        </li>
+        <li class="slide slide-2" style="background-image: url(./images/banner2.jpg)">
+          <div class="text-wrapper">
+            <h3>100% 健康</h3>
+            <strong>不含任何人工甜味剂、色素、香精和防腐剂</strong>
+          </div>
+        </li>
+      </ul>
+      <a class="left-btn" flex-row><span>&lt;</span></a>
+      <a class="right-btn" flex-row><span>&gt;</span></a>
+      <!--<div class="index-dot" flex-row>-->
+        <!--<a class="dot active"></a>-->
+        <!--<a class="dot"></a>-->
+      <!--</div>-->
+    </section>
+    <section class="container">
+      <h2>现已推出</h2>
+      <article flex-row style="justify-content: flex-end">
+        <div class="product-wrapper" flex-column>
+          <div class="image-wrapper jiating">
+            <img src="./images/jiatingzhuang.jpg" alt="" class="background-img">
+            <img src="./images/product.png" alt="" class="product">
+          </div>
+          <div class="text-wrapper jiating">
+            <h3>家庭装</h3>
+            <p>口感纯正，用于烹饪、烘培、甜点等食品佐料，保障家人健康。</p>
+          </div>
+          <a href="" class="buy-btn">购买</a>
+        </div>
+      </article>
+      <article flex-row style="margin-top: 48px">
+        <div class="product-wrapper column">
+          <div class="image-wrapper bianxie">
+            <img src="./images/bianxie.jpg" alt="" class="background-img">
+            <img src="./images/product.png" alt="" class="product">
+          </div>
+          <div class="text-wrapper bianxie">
+            <h3>冲调装</h3>
+            <p>经典咖啡、奶茶调糖包，独立包装，方便易用，洁净优雅，天然健康。</p>
+          </div>
+          <a href="" class="buy-btn">购买</a>
+        </div>
+      </article>
+    </section>
+    <section class="container">
+      <h2>联系我们</h2>
+      <article flex-row class="contact-us">
+        <div id="location-wrapper"></div>
+        <div class="info-wrapper">
+          <h3>栢甜</h3>
+          <p>电话：400-000000</p>
+          <p>邮箱：hello@healthysweet.cn</p>
+          <p>地址：北京市石景山区紫御长安1006室</p>
+          <img src="./images/qrcode.png" class="qr-code">
+        </div>
+      </article>
+    </section>
+  </main>
+  <footer id="main-footer">
+    <p class="copy-right">2017 栢甜(BETTY) 版权所有，京ICP备：15041940号-1</p>
+  </footer>
+  <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.4.4&key=35695fc86a27e3e85d6c2f6e8016f8cf"></script>
+  <script type="text/javascript">
+      document.querySelector('.menu-wrapper').addEventListener("click", function(event) {
+          if(document.body.offsetWidth > 600) return;
+          if(event.target.classList.contains("open")) {
+              event.target.classList.remove("open");
+          } else {
+              event.target.classList.add("open");
+          }
+      });
+
+      var slideWrapper = document.querySelector("#carousel .slides");
+      var sliders = slideWrapper.querySelectorAll(".slide");
+      var _SLIDELEN = sliders.length;
+      for(var i=0;i<_SLIDELEN;i++) {
+          sliders[i].style.left = i*100 + "%";
+          sliders[i].style.transition = "left .5s";
+      }
+      function prevSlide(){
+          if(_SLIDELEN<1) return;
+          var first = slideWrapper.querySelector(".slide:first-child");
+          if(first.style.left.replace("%","") >= 0) {
+              var last = slideWrapper.querySelector(".slide:last-child");
+              last.remove();
+              last.style.left = "-100%";
+              slideWrapper.insertBefore(last, first);
+          }
+          setTimeout(function(){
+              var sliders = slideWrapper.querySelectorAll(".slide");
+              for(var i=0;i<sliders.length;i++) {
+                  sliders[i].style.left = (parseInt(sliders[i].style.left)+100) + "%";
+              }
+          });
+      }
+      function nextSlide(){
+          if(_SLIDELEN<1) return;
+          var first = slideWrapper.querySelector(".slide:first-child");
+          if(first.style.left.replace("%","")<0) {
+              first.remove();
+              first.style.left = (_SLIDELEN-1)*100+"%";
+              slideWrapper.appendChild(first);
+          }
+          setTimeout(function(){
+              var sliders = slideWrapper.querySelectorAll(".slide");
+              for(var i=0;i<sliders.length;i++) {
+                  sliders[i].style.left = (parseInt(sliders[i].style.left)-100) + "%";
+              }
+          });
+      }
+      document.querySelector('#carousel .right-btn').addEventListener("click", nextSlide);
+      document.querySelector('#carousel .left-btn').addEventListener("click", prevSlide);
+      setInterval(nextSlide, 10000);
+  </script>
+  <script>
+      // load map
+      var map = new AMap.Map('location-wrapper',{
+          resizeEnable: true,
+          zoom:11,
+          center: [116.212348,39.903296]
+      });
+      marker = new AMap.Marker({
+          position: [116.212348,39.903296],
+          title: "北京市石景山区紫御长安"
+      });
+      marker.setMap(map);
+
+  </script>
+</body>
+</html>

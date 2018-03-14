@@ -1,0 +1,81 @@
+#about
+  margin-bottom 64px
+  .header-image
+    display block
+    width 100%
+    height auto
+  .material-wrapper
+    position relative
+    display flex
+    flex-flow row nowrap
+    justify-content flex-start
+    align-items center
+    .material-image-wrapper
+      flex-grow 1
+      height 300px
+      background-size cover
+      background-position center
+      background-repeat no-repeat
+    .material-text-wrapper
+      width 50%
+      overflow hidden
+      transition all .5s
+      position relative
+      height 300px
+      opacity 1
+      .material-text-wrapper-inner
+        position absolute
+        left 50%
+        top 50%
+        width 400px
+        max-width 100%
+        padding 24px
+        transform translate(-50%, -50%)
+        h3
+          font-size 24px
+          line-height 2em
+        p
+          font-size 18px
+    &:hover
+      .material-details-wrapper
+        opacity 1
+      .material-text-wrapper
+        width 0
+        padding 0
+        opacity 0
+    .material-details-wrapper
+      position absolute
+      left 0px
+      top 0px
+      width 100%
+      height 100%
+      background rgba(0,0,0,.38)
+      color #fff
+      padding 48px
+      font-size 20px
+      line-height 1.5em
+      opacity 0
+      transition opacity .5s
+      pointer-events none
+
+@media (max-width: 600px)
+  #about
+    .material-wrapper
+      flex-flow column nowrap
+      pointer-events none
+      &.reverse
+        flex-direction column-reverse
+      .material-text-wrapper
+        height 220px
+        width 100%
+        .material-text-wrapper-inner
+          h3
+            font-size 18px
+          p
+            font-size 14px
+      .material-details-wrapper
+        font-size 14px
+        padding 24px
+      .material-image-wrapper
+        height 220px
+        width 100%
