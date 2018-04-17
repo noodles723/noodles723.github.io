@@ -1,0 +1,73 @@
+<html><head><title></title><meta name="keywords"/><meta name="description"/><meta charset="UTF-8"/><meta name="renderer" content="webkit"/><meta name="referrer" content="always"/><meta name="googlebot" content="NOODP"/><meta name="viewport" content="width=device-width,initial-scale=1.0,height=device-height,user-scalable=no,minimum-scale=1.0,maximum-scale=1.0"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="apple-mobile-web-app-status-bar-style" content="black"/><meta name="format-detection" content="telephone=no, email=no"/><meta name="robots" content="index,follow"/><meta http-equiv="Cache-Control" content="no-siteapp"/><meta name="renderer" content="webkit"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="HandheldFriendly" content="true"/><meta name="MobileOptimized" content="320"/><meta name="screen-orientation" content="portrait"/><meta name="x5-orientation" content="portrait"/><meta name="full-screen" content="yes"/><meta name="x5-fullscreen" content="true"/><meta name="browsermode" content="application"/><meta name="x5-page-mode" content="app"/><meta name="msapplication-tap-highlight" content="no"/><script>var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?1d0db9c3c2c6dc7d78ff8eac0ea41f6f";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();</script><link rel="stylesheet" href="/css/base.css"/><link rel="stylesheet" href="/css/post.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/github.min.css"/></head><body><h1 class="blog-logo"><a href="/" title="Home"><img src="/img/logo.png"/></a></h1><nav id="blog-header-nav"><ul class="nav-list"><li><a href="/list" class="nav-item hover-lighten" title="posts">Posts</a></li><li><a href="/photography" class="nav-item hover-lighten" title="photography">Photography</a></li><li><a href="/about" class="nav-item hover-lighten" title="about">About</a></li></ul></nav><div class="main-wrapper"><main id="main"><article id="post-content"><header class="post-content-header"><h1>前端常用代码备份</h1><span class="date">2018.03.13</span></header><div class="post-content-body"><div class="article-content"><p>个人备份。</p>
+<!-- more -->
+<h3 id="-html-">常用的html转译</h3>
+<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">html_encode</span>(<span class="hljs-params">str</span>) </span>{
+    <span class="hljs-keyword">var</span> s = <span class="hljs-string">""</span>;
+    <span class="hljs-keyword">if</span> (str.length == <span class="hljs-number">0</span>)
+        <span class="hljs-keyword">return</span> <span class="hljs-string">""</span>;
+    s = str.replace(<span class="hljs-regexp">/&amp;/g</span>, <span class="hljs-string">"&amp;gt;"</span>);
+    s = s.replace(<span class="hljs-regexp">/&lt;/g</span>, <span class="hljs-string">"&amp;lt;"</span>);
+    s = s.replace(<span class="hljs-regexp">/&gt;/g</span>, <span class="hljs-string">"&amp;gt;"</span>);
+    s = s.replace(<span class="hljs-regexp">/ /g</span>, <span class="hljs-string">"&amp;nbsp;"</span>);
+    s = s.replace(<span class="hljs-regexp">/\'/g</span>, <span class="hljs-string">"&amp;#39;"</span>);
+    s = s.replace(<span class="hljs-regexp">/\"/g</span>, <span class="hljs-string">"&amp;quot;"</span>);
+    s = s.replace(<span class="hljs-regexp">/\n/g</span>, <span class="hljs-string">"&lt;br&gt;"</span>);
+    <span class="hljs-keyword">return</span> s;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">html_decode</span>(<span class="hljs-params">str</span>) </span>{
+    <span class="hljs-keyword">var</span> s = <span class="hljs-string">""</span>;
+    <span class="hljs-keyword">if</span> (str.length == <span class="hljs-number">0</span>)
+        <span class="hljs-keyword">return</span> <span class="hljs-string">""</span>;
+    s = str.replace(<span class="hljs-regexp">/&amp;gt;/g</span>, <span class="hljs-string">"&amp;"</span>);
+    s = s.replace(<span class="hljs-regexp">/&amp;lt;/g</span>, <span class="hljs-string">"&lt;"</span>);
+    s = s.replace(<span class="hljs-regexp">/&amp;gt;/g</span>, <span class="hljs-string">"&gt;"</span>);
+    s = s.replace(<span class="hljs-regexp">/&amp;nbsp;/g</span>, <span class="hljs-string">" "</span>);
+    s = s.replace(<span class="hljs-regexp">/&amp;#39;/g</span>, <span class="hljs-string">"\'"</span>);
+    s = s.replace(<span class="hljs-regexp">/&amp;quot;/g</span>, <span class="hljs-string">"\""</span>);
+    s = s.replace(<span class="hljs-regexp">/&lt;br&gt;/g</span>, <span class="hljs-string">"\n"</span>);
+    <span class="hljs-keyword">return</span> s;
+}
+</code></pre>
+<h3 id="js-excel">js生成excel</h3>
+<p><code>npm install xlsx</code></p>
+<pre><code class="lang-js"><span class="hljs-built_in">let</span> data = [[<span class="hljs-string">"工单号"</span>, <span class="hljs-string">"来源"</span>, <span class="hljs-string">"一级分类"</span>, <span class="hljs-string">"二级分类"</span>, <span class="hljs-string">"关联牛牛号"</span>, <span class="hljs-string">"状态"</span>, <span class="hljs-string">"当前处理人"</span>, <span class="hljs-string">"创建时间"</span>, <span class="hljs-string">"归档时间"</span>]];
+            res.data.forEach(d =&gt; {
+                <span class="hljs-built_in">let</span> <span class="hljs-built_in">row</span> = [];
+                <span class="hljs-built_in">row</span>.<span class="hljs-built_in">push</span>(d.order_no);
+                <span class="hljs-built_in">row</span>.<span class="hljs-built_in">push</span>(self.sourceName[d.order_source]);
+                <span class="hljs-built_in">row</span>.<span class="hljs-built_in">push</span>(d.parent_title);
+                <span class="hljs-built_in">row</span>.<span class="hljs-built_in">push</span>(d.category_title);
+                <span class="hljs-built_in">row</span>.<span class="hljs-built_in">push</span>(d.uid);
+                <span class="hljs-built_in">row</span>.<span class="hljs-built_in">push</span>(self.statusName[d.archived_state]);
+                <span class="hljs-built_in">row</span>.<span class="hljs-built_in">push</span>(d.staff_name);
+                <span class="hljs-built_in">row</span>.<span class="hljs-built_in">push</span>(self.filter('date')(d.created_time*<span class="hljs-number">1000</span>, 'yyyy-MM-dd HH:mm:ss'));
+                <span class="hljs-built_in">row</span>.<span class="hljs-built_in">push</span>(d.archived_time ? self.filter('date')(d.archived_time*<span class="hljs-number">1000</span>, 'yyyy-MM-dd HH:mm:ss') : <span class="hljs-string">""</span>);
+                data.<span class="hljs-built_in">push</span>(<span class="hljs-built_in">row</span>);
+            });
+
+            <span class="hljs-built_in">let</span> wb = {
+                SheetNames: ['s1'],
+                Sheets: {s1: this.xlsx.utils.aoa_to_sheet(data)}
+            };
+
+            <span class="hljs-built_in">let</span> wbout = this.xlsx.write(wb, {bookType:'xlsx', bookSST:<span class="hljs-literal">true</span>, type: 'binary'});
+            <span class="hljs-built_in">let</span> name = <span class="hljs-string">"工单列表 "</span>+this.filter('date')((<span class="hljs-built_in">new</span> Date()), 'yyyy年MM月dd日 HH点mm分ss秒')+<span class="hljs-string">".xlsx"</span>;
+            this.fs.saveFile(wbout, 'xlsx', name);
+</code></pre>
+</div><footer><div class="comments-section"><div id="disqus_thread"><script>/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = 'tianqi'; // required: replace example with your forum shortname
+
+/* * * DON'T EDIT BELOW THIS LINE * * */
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script></div></div></footer></div><footer class="post-content-footer" flex-row="flex-row"><a class="prev" href="/posts/2018/行情基本概念"><label>Prev</label><p>行情基本概念</p></a></footer></article></main><footer id="home-footer">.copyright © 2015 by Tianqi</footer></div></body></html>
