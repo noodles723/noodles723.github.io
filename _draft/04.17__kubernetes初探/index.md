@@ -3,7 +3,7 @@ category: ["后台", "运维"]
 keywords: ["kubernetes", "docker"]
 ---
 
-kubernetes学习记录。
+kubernetes入门级别的新手引导。
 
 <!-- more -->
 
@@ -49,9 +49,8 @@ $ curl http://localhost:8001/api/v1/proxy/namespaces/default/pods/$POD_NAME/
 
 ## 更多应用交互
 
-**Pod**是一次部署的具体实现，是多个容器群的统称，他们共享**存储(volumes)**，**ip**，**启动脚本**。
+**Pod**是一个应用的最小逻辑单元集合，可以包括多个containerized app和多个volume，一个node上可以跑多个pod，他们共享**存储(volumes)**，**ip**，**启动脚本**。
 
-pod是一个应用的最小逻辑单元集合，可以包括多个containerized app和多个volume，一个node上可以跑多个pod。
 
 ![](https://d33wubrfki0l68.cloudfront.net/5cb72d407cbe2755e581b6de757e0d81760d5b86/a9df9/docs/tutorials/kubernetes-basics/public/images/module_03_nodes.svg)
 
@@ -71,5 +70,74 @@ $ kubectl exec $POD_NAME env  // 输出container中的环境变量
 $ kubectl exec -ti $POD_NAME bash // 在container中启动bash
 ```
 
-## 
+## 启动服务暴露应用接口
+
+service负责维护pods的生命周期，负责保活及暴露对外接口。它定义了一群逻辑相关的pods及它们的接入方式：
+
+ - ClusterIP(默认)：暴露一个仅供集群内访问的ip
+ - NodePort：暴露对外可访问的port,ip就是node本身的ip，<NodeIp>:<NodePort>，是clusterIp的父类
+ - LoadBalancer：创建一个基于当前cloud的负载均衡实例，提供一个固定的对外ip，NodePort的父类
+ - ExternalName：返回一个cname记录，直接用名称暴露对外接口
+
+service用标签和选择器去匹配pods：
+
+![](https://d33wubrfki0l68.cloudfront.net/b964c59cdc1979dd4e1904c25f43745564ef6bee/f3351/docs/tutorials/kubernetes-basics/public/images/module_04_labels.svg)
+
+有关命令：
+
+```bash
+$ kubectl get services          // 查看所有服务
+$ kubectl expose deployment/kubernetes-bootcamp --type="NodePort" --port 8080 // 启动service
+$ kubectl describe services/kubernetes-bootcamp     // 查看service详情
+
+// 将nodeport存入环境变量
+$ export NODE_PORT=$(kubectl get services/kubernetes-bootcamp -o go-template='{{(index .spec.ports 0).nodePort}}')
+$ echo NODE_PORT=$NODE_PORT
+
+// 测试接口
+$ curl $(minikube ip):$NODE_PORT
+```
+
+可以自定义标签筛选pods或service：
+
+```bash
+$ kubectl describe deployment           // 可以看到标签名称
+$ kubectl get pods -l run=kubernetes-bootcamp   // 通过标签筛选pods
+$ kubectl get services -l run=kubernetes-bootcamp   //通过标签筛选service
+
+// 将pod名称存入环境变量
+$ export POD_NAME=$(kubectl get pods -o go-template --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}')
+$ echo Name of the Pod: $POD_NAME
+
+$ kubectl label pod $POD_NAME app=v1    // 将pod的label改为app=v1
+$ kubectl describe pods $POD_NAME       // 可以看到label值已变为app=v1
+
+$ kubectl delete service -l run=kubernetes-bootcamp // 删除service，但app本身还是在pods里继续跑着的
+
+```
+
+## 水平拓展应用
+
+水平增加deployment的数量
+
+![](https://d33wubrfki0l68.cloudfront.net/30f75140a581110443397192d70a4cdb37df7bfc/b5f56/docs/tutorials/kubernetes-basics/public/images/module_05_scaling2.svg)
+
+有关命令：
+
+```bash
+$ kubectl scale deployments/kubernetes-bootcamp --replicas=4    // 拓展replicas到四个
+$ kubectl get pods -o wide  // 显示pods及ip
+```
+
+## 更新应用
+
+无宕机动态更新，同时保留版本信息，方便回滚。
+
+```bash
+// 通知deployment使用新的image
+$ kubectl set image deployments/kubernetes-bootcamp kubernetes-bootcamp=jocatalin/kubernetes-bootcamp:v2    
+$ kubectl rollout status deployments/kubernetes-bootcamp    // 显示rollout状态
+$ kubectl get pods  // 可以看到image信息已更新
+$ kubectl rollout undo deployments/kubernetes-bootcamp  // 返回上一个版本
+```
 
