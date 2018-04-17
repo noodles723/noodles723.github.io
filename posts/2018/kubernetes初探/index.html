@@ -1,0 +1,107 @@
+<html><head><title></title><meta name="keywords"/><meta name="description"/><meta charset="UTF-8"/><meta name="renderer" content="webkit"/><meta name="referrer" content="always"/><meta name="googlebot" content="NOODP"/><meta name="viewport" content="width=device-width,initial-scale=1.0,height=device-height,user-scalable=no,minimum-scale=1.0,maximum-scale=1.0"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="apple-mobile-web-app-status-bar-style" content="black"/><meta name="format-detection" content="telephone=no, email=no"/><meta name="robots" content="index,follow"/><meta http-equiv="Cache-Control" content="no-siteapp"/><meta name="renderer" content="webkit"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="HandheldFriendly" content="true"/><meta name="MobileOptimized" content="320"/><meta name="screen-orientation" content="portrait"/><meta name="x5-orientation" content="portrait"/><meta name="full-screen" content="yes"/><meta name="x5-fullscreen" content="true"/><meta name="browsermode" content="application"/><meta name="x5-page-mode" content="app"/><meta name="msapplication-tap-highlight" content="no"/><script>var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?1d0db9c3c2c6dc7d78ff8eac0ea41f6f";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();</script><link rel="stylesheet" href="/css/base.css"/><link rel="stylesheet" href="/css/post.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/github.min.css"/></head><body><h1 class="blog-logo"><a href="/" title="Home"><img src="/img/logo.png"/></a></h1><nav id="blog-header-nav"><ul class="nav-list"><li><a href="/list" class="nav-item hover-lighten" title="posts">Posts</a></li><li><a href="/photography" class="nav-item hover-lighten" title="photography">Photography</a></li><li><a href="/about" class="nav-item hover-lighten" title="about">About</a></li></ul></nav><div class="main-wrapper"><main id="main"><article id="post-content"><header class="post-content-header"><h1>kubernetes初探</h1><span class="date">2018.04.17</span></header><div class="post-content-body"><div class="article-content"><p>kubernetes入门级别的新手引导。</p>
+<!-- more -->
+<h2 id="-cluster">创建一个cluster</h2>
+<p>kubernetes简而言之是一个容器管理系统，开源，谷歌背书。</p>
+<p>架构上包含master和node，每个node可以视为一台服务器或ECS，node上可以跑多个process，master管理node。一个线上环境kubernetes集群最少应有三个nodes。</p>
+<p><a href="https://github.com/kubernetes/minikube">Minikube</a>是kubernetes的一个具体实现，可在本地创建一个虚拟机，模拟一个简单集群。</p>
+<p>minikube有关命令：</p>
+<pre><code class="lang-bash"><span class="hljs-symbol">$</span> minikube start              <span class="hljs-comment">// 启动集群</span>
+<span class="hljs-symbol">$</span> kubectl cluster-info          <span class="hljs-comment">// 显示集群信息，会显示master的管理界面url</span>
+<span class="hljs-symbol">$</span> kubectl get nodes             <span class="hljs-comment">// 显示所有节点信息</span>
+</code></pre>
+<h2 id="-">部署应用</h2>
+<p>有关命令：</p>
+<pre><code class="lang-bash">$ kubectl <span class="hljs-built_in">run</span> [name] --<span class="hljs-built_in">image</span>=[镜像地址] --port=<span class="hljs-number">8080</span>     <span class="hljs-comment">// 部署应用</span>
+$ kubectl <span class="hljs-built_in">get</span> deployments               <span class="hljs-comment">// 获取所有deployments信息</span>
+$ kubectl proxy <span class="hljs-comment">// 开启cluster内部的网络代理，这样可以直接由外部url访问内部api</span>
+</code></pre>
+<p>用<code>$ kubectl get pods</code>可以显示pod信息，然后可以通过代理的url直接访问我们部署的应用接口。</p>
+<pre><code class="lang-bash">//  将pod名称记到全局变量里
+<span class="hljs-meta">$</span><span class="bash"> <span class="hljs-built_in">export</span> POD_NAME=$(kubectl get pods -o go-template --template <span class="hljs-string">'{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}'</span>)</span>
+<span class="hljs-meta">$</span><span class="bash"> <span class="hljs-built_in">echo</span> Name of the Pod: <span class="hljs-variable">$POD_NAME</span></span>
+
+// 假设kubectl proxy返回的是http://localhost:8001
+<span class="hljs-meta">$</span><span class="bash"> curl http://localhost:8001/version    // 同 kubectl version的client version</span>
+
+// 访问应用的api
+<span class="hljs-meta">$</span><span class="bash"> curl http://localhost:8001/api/v1/proxy/namespaces/default/pods/<span class="hljs-variable">$POD_NAME</span>/</span>
+</code></pre>
+<h2 id="-">更多应用交互</h2>
+<p><strong>Pod</strong>是一个应用的最小逻辑单元集合，可以包括多个containerized app和多个volume，一个node上可以跑多个pod，他们共享<strong>存储(volumes)</strong>，<strong>ip</strong>，<strong>启动脚本</strong>。</p>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/5cb72d407cbe2755e581b6de757e0d81760d5b86/a9df9/docs/tutorials/kubernetes-basics/public/images/module_03_nodes.svg" alt=""></p>
+<p>有关命令：</p>
+<pre><code class="lang-bash">$ kubectl get pods          // 获取pods信息
+$ kubectl describe pods     // 查看pods详情，describe命令也可用于<span class="hljs-keyword">node</span><span class="hljs-title">和deployments</span>
+</code></pre>
+<p>应用里输出到console（STDOUT）中的内容会被记录到log中，可以通过<code>kubectl logs $POD_NAME</code>查看。</p>
+<p>使用<code>kubectl exec</code>可在container中执行代码：</p>
+<pre><code class="lang-bash"><span class="hljs-meta">$</span><span class="bash"> kubectl <span class="hljs-built_in">exec</span> <span class="hljs-variable">$POD_NAME</span> env  // 输出container中的环境变量</span>
+<span class="hljs-meta">$</span><span class="bash"> kubectl <span class="hljs-built_in">exec</span> -ti <span class="hljs-variable">$POD_NAME</span> bash // 在container中启动bash</span>
+</code></pre>
+<h2 id="-">启动服务暴露应用接口</h2>
+<p>service负责维护pods的生命周期，负责保活及暴露对外接口。它定义了一群逻辑相关的pods及它们的接入方式：</p>
+<ul>
+<li>ClusterIP(默认)：暴露一个仅供集群内访问的ip</li>
+<li>NodePort：暴露对外可访问的port,ip就是node本身的ip，<NodeIp>:<NodePort>，是clusterIp的父类</li>
+<li>LoadBalancer：创建一个基于当前cloud的负载均衡实例，提供一个固定的对外ip，NodePort的父类</li>
+<li>ExternalName：返回一个cname记录，直接用名称暴露对外接口</li>
+</ul>
+<p>service用标签和选择器去匹配pods：</p>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/b964c59cdc1979dd4e1904c25f43745564ef6bee/f3351/docs/tutorials/kubernetes-basics/public/images/module_04_labels.svg" alt=""></p>
+<p>有关命令：</p>
+<pre><code class="lang-bash"><span class="hljs-meta">$</span><span class="bash"> kubectl get services          // 查看所有服务</span>
+<span class="hljs-meta">$</span><span class="bash"> kubectl expose deployment/kubernetes-bootcamp --<span class="hljs-built_in">type</span>=<span class="hljs-string">"NodePort"</span> --port 8080 // 启动service</span>
+<span class="hljs-meta">$</span><span class="bash"> kubectl describe services/kubernetes-bootcamp     // 查看service详情</span>
+
+// 将nodeport存入环境变量
+<span class="hljs-meta">$</span><span class="bash"> <span class="hljs-built_in">export</span> NODE_PORT=$(kubectl get services/kubernetes-bootcamp -o go-template=<span class="hljs-string">'{{(index .spec.ports 0).nodePort}}'</span>)</span>
+<span class="hljs-meta">$</span><span class="bash"> <span class="hljs-built_in">echo</span> NODE_PORT=<span class="hljs-variable">$NODE_PORT</span></span>
+
+// 测试接口
+<span class="hljs-meta">$</span><span class="bash"> curl $(minikube ip):<span class="hljs-variable">$NODE_PORT</span></span>
+</code></pre>
+<p>可以自定义标签筛选pods或service：</p>
+<pre><code class="lang-bash"><span class="hljs-meta">$</span><span class="bash"> kubectl describe deployment           // 可以看到标签名称</span>
+<span class="hljs-meta">$</span><span class="bash"> kubectl get pods -l run=kubernetes-bootcamp   // 通过标签筛选pods</span>
+<span class="hljs-meta">$</span><span class="bash"> kubectl get services -l run=kubernetes-bootcamp   //通过标签筛选service</span>
+
+// 将pod名称存入环境变量
+<span class="hljs-meta">$</span><span class="bash"> <span class="hljs-built_in">export</span> POD_NAME=$(kubectl get pods -o go-template --template <span class="hljs-string">'{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}'</span>)</span>
+<span class="hljs-meta">$</span><span class="bash"> <span class="hljs-built_in">echo</span> Name of the Pod: <span class="hljs-variable">$POD_NAME</span></span>
+<span class="hljs-meta">
+$</span><span class="bash"> kubectl label pod <span class="hljs-variable">$POD_NAME</span> app=v1    // 将pod的label改为app=v1</span>
+<span class="hljs-meta">$</span><span class="bash"> kubectl describe pods <span class="hljs-variable">$POD_NAME</span>       // 可以看到label值已变为app=v1</span>
+<span class="hljs-meta">
+$</span><span class="bash"> kubectl delete service -l run=kubernetes-bootcamp // 删除service，但app本身还是在pods里继续跑着的</span>
+</code></pre>
+<h2 id="-">水平拓展应用</h2>
+<p>水平增加deployment的数量</p>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/30f75140a581110443397192d70a4cdb37df7bfc/b5f56/docs/tutorials/kubernetes-basics/public/images/module_05_scaling2.svg" alt=""></p>
+<p>有关命令：</p>
+<pre><code class="lang-bash"><span class="hljs-symbol">$</span> kubectl scale deployments/kubernetes-bootcamp --replicas=<span class="hljs-number">4</span>    <span class="hljs-comment">// 拓展replicas到四个</span>
+<span class="hljs-symbol">$</span> kubectl get pods -o wide  <span class="hljs-comment">// 显示pods及ip</span>
+</code></pre>
+<h2 id="-">更新应用</h2>
+<p>无宕机动态更新，同时保留版本信息，方便回滚。</p>
+<pre><code class="lang-bash"><span class="hljs-comment">// 通知deployment使用新的image</span>
+<span class="hljs-symbol">$</span> kubectl <span class="hljs-keyword">set</span> image <span class="hljs-comment">deployments</span>/kubernetes-bootcamp kubernetes-bootcamp=jocatalin/<span class="hljs-comment">kubernetes-bootcamp:v2</span>    
+$ kubectl <span class="hljs-comment">rollout status deployments</span>/kubernetes-bootcamp    <span class="hljs-comment">// 显示rollout状态</span>
+$ kubectl get pods  <span class="hljs-comment">// 可以看到image信息已更新</span>
+$ kubectl rollout undo deployments/<span class="hljs-comment">kubernetes-bootcamp</span>  // 返回上一个版本
+</code></pre>
+</div><footer><div class="comments-section"><div id="disqus_thread"><script>/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = 'tianqi'; // required: replace example with your forum shortname
+
+/* * * DON'T EDIT BELOW THIS LINE * * */
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script></div></div></footer></div><footer class="post-content-footer" flex-row="flex-row"><a class="prev" href="/posts/2018/前端常用代码备份"><label>Prev</label><p>前端常用代码备份</p></a></footer></article></main><footer id="home-footer">.copyright © 2015 by Tianqi</footer></div></body></html>
