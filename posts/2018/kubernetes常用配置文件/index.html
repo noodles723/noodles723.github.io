@@ -1,0 +1,166 @@
+<html><head><title></title><meta name="keywords"/><meta name="description"/><meta charset="UTF-8"/><meta name="renderer" content="webkit"/><meta name="referrer" content="always"/><meta name="googlebot" content="NOODP"/><meta name="viewport" content="width=device-width,initial-scale=1.0,height=device-height,user-scalable=no,minimum-scale=1.0,maximum-scale=1.0"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="apple-mobile-web-app-status-bar-style" content="black"/><meta name="format-detection" content="telephone=no, email=no"/><meta name="robots" content="index,follow"/><meta http-equiv="Cache-Control" content="no-siteapp"/><meta name="renderer" content="webkit"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="HandheldFriendly" content="true"/><meta name="MobileOptimized" content="320"/><meta name="screen-orientation" content="portrait"/><meta name="x5-orientation" content="portrait"/><meta name="full-screen" content="yes"/><meta name="x5-fullscreen" content="true"/><meta name="browsermode" content="application"/><meta name="x5-page-mode" content="app"/><meta name="msapplication-tap-highlight" content="no"/><script>var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?1d0db9c3c2c6dc7d78ff8eac0ea41f6f";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();</script><link rel="stylesheet" href="/css/base.css"/><link rel="stylesheet" href="/css/post.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/github.min.css"/></head><body><h1 class="blog-logo"><a href="/" title="Home"><img src="/img/logo.png"/></a></h1><nav id="blog-header-nav"><ul class="nav-list"><li><a href="/list" class="nav-item hover-lighten" title="posts">Posts</a></li><li><a href="/photography" class="nav-item hover-lighten" title="photography">Photography</a></li><li><a href="/about" class="nav-item hover-lighten" title="about">About</a></li></ul></nav><div class="main-wrapper"><main id="main"><article id="post-content"><header class="post-content-header"><h1>kubernetes常用配置文件</h1><span class="date">2018.04.18</span></header><div class="post-content-body"><div class="article-content"><p>kubernetes配置文件摘录。</p>
+<!-- more -->
+<p>service的config file：</p>
+<p>用label去匹配pods的：</p>
+<pre><code class="lang-yaml"><span class="hljs-attribute">kind</span>: Service
+<span class="hljs-attribute">apiVersion</span>: v1
+<span class="hljs-attribute">metadata</span>:
+  <span class="hljs-attribute">name</span>: my-service
+<span class="hljs-attribute">spec</span>:
+  <span class="hljs-attribute">selector</span>:
+    <span class="hljs-attribute">app</span>: MyApp          <span class="hljs-comment">// label是 app=MyApp</span>
+  <span class="hljs-attribute">ports</span>:
+  - <span class="hljs-attribute">protocol</span>: TCP
+    <span class="hljs-attribute">port</span>: <span class="hljs-number">80</span>
+    <span class="hljs-attribute">targetPort</span>: <span class="hljs-number">9376</span>
+</code></pre>
+<p>不用label自定义接入点：</p>
+<pre><code class="lang-yaml"><span class="hljs-attribute">kind</span>: Service
+<span class="hljs-attribute">apiVersion</span>: v1
+<span class="hljs-attribute">metadata</span>:
+  <span class="hljs-attribute">name</span>: my-service
+<span class="hljs-attribute">spec</span>:
+  <span class="hljs-attribute">ports</span>:
+  - <span class="hljs-attribute">protocol</span>: TCP
+    <span class="hljs-attribute">port</span>: <span class="hljs-number">80</span>
+    <span class="hljs-attribute">targetPort</span>: <span class="hljs-number">9376</span>
+
+----------------------------------------------------------
+
+<span class="hljs-attribute">kind</span>: Endpoints
+<span class="hljs-attribute">apiVersion</span>: v1
+<span class="hljs-attribute">metadata</span>:
+  <span class="hljs-attribute">name</span>: my-service
+<span class="hljs-attribute">subsets</span>:
+  - <span class="hljs-attribute">addresses</span>:
+      - <span class="hljs-attribute">ip</span>: <span class="hljs-number">1.2</span>.<span class="hljs-number">3.4</span>
+    <span class="hljs-attribute">ports</span>:
+      - <span class="hljs-attribute">port</span>: <span class="hljs-number">9376</span>
+</code></pre>
+<p>直接用域名：</p>
+<pre><code class="lang-yaml"><span class="hljs-symbol">kind:</span> Service
+<span class="hljs-symbol">apiVersion:</span> v1
+<span class="hljs-symbol">metadata:</span>
+<span class="hljs-symbol">  name:</span> my-service
+<span class="hljs-symbol">  namespace:</span> prod
+<span class="hljs-symbol">spec:</span>
+<span class="hljs-symbol">  type:</span> ExternalName
+<span class="hljs-symbol">  externalName:</span> my.database.example.com
+</code></pre>
+<p>deployment的config:</p>
+<pre><code class="lang-yaml"><span class="hljs-attribute">apiVersion</span>: apps/v1
+<span class="hljs-attribute">kind</span>: Deployment
+<span class="hljs-attribute">metadata</span>:
+  <span class="hljs-attribute">name</span>: nginx-deployment
+<span class="hljs-attribute">spec</span>:
+  <span class="hljs-attribute">selector</span>:
+    <span class="hljs-attribute">matchLabels</span>:
+      <span class="hljs-attribute">app</span>: nginx
+  <span class="hljs-attribute">minReadySeconds</span>: <span class="hljs-number">5</span>
+  <span class="hljs-attribute">replicas</span>: <span class="hljs-number">2</span>
+  <span class="hljs-attribute">template</span>:
+    <span class="hljs-attribute">metadata</span>:
+      <span class="hljs-attribute">labels</span>:
+        <span class="hljs-attribute">app</span>: nginx
+    <span class="hljs-attribute">spec</span>:
+      <span class="hljs-attribute">containers</span>:
+      - <span class="hljs-attribute">name</span>: nginx
+        <span class="hljs-attribute">image</span>: <span class="hljs-attribute">nginx</span>:<span class="hljs-number">1.7</span>.<span class="hljs-number">9</span>
+        <span class="hljs-attribute">ports</span>:
+        - <span class="hljs-attribute">containerPort</span>: <span class="hljs-number">80</span>
+</code></pre>
+<p><a href="https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/">job</a>的config:</p>
+<pre><code class="lang-yaml"><span class="hljs-attribute">apiVersion</span>: batch/v1
+<span class="hljs-attribute">kind</span>: Job
+<span class="hljs-attribute">metadata</span>:
+  <span class="hljs-attribute">name</span>: pi
+<span class="hljs-attribute">spec</span>:
+  <span class="hljs-attribute">template</span>:
+    <span class="hljs-attribute">spec</span>:
+      <span class="hljs-attribute">containers</span>:
+      - <span class="hljs-attribute">name</span>: pi
+        <span class="hljs-attribute">image</span>: perl
+        <span class="hljs-attribute">command</span>: [<span class="hljs-string">"perl"</span>,  <span class="hljs-string">"-Mbignum=bpi"</span>, <span class="hljs-string">"-wle"</span>, <span class="hljs-string">"print bpi(2000)"</span>]
+      <span class="hljs-attribute">restartPolicy</span>: Never
+  <span class="hljs-attribute">backoffLimit</span>: <span class="hljs-number">4</span>
+</code></pre>
+<p><a href="https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/">cronJob</a>的config:</p>
+<pre><code class="lang-yaml"><span class="hljs-symbol">apiVersion:</span> batch/v1beta1
+<span class="hljs-symbol">kind:</span> CronJob
+<span class="hljs-symbol">metadata:</span>
+<span class="hljs-symbol">  name:</span> hello
+<span class="hljs-symbol">spec:</span>
+<span class="hljs-symbol">  schedule:</span> <span class="hljs-string">"*/1 * * * *"</span>
+<span class="hljs-symbol">  jobTemplate:</span>
+<span class="hljs-symbol">    spec:</span>
+<span class="hljs-symbol">      template:</span>
+<span class="hljs-symbol">        spec:</span>
+<span class="hljs-symbol">          containers:</span>
+          - name: hello
+<span class="hljs-symbol">            image:</span> busybox
+<span class="hljs-symbol">            args:</span>
+            - <span class="hljs-meta-keyword">/bin/</span>sh
+            - -c
+            - date; echo Hello from the Kubernetes cluster
+<span class="hljs-symbol">          restartPolicy:</span> OnFailure
+</code></pre>
+<p><a href="https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/">daemonSet</a>的config:</p>
+<pre><code class="lang-yaml"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">apps/v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">DaemonSet</span>
+<span class="hljs-attr">metadata:</span>
+<span class="hljs-attr">  name:</span> <span class="hljs-string">fluentd-elasticsearch</span>
+<span class="hljs-attr">  namespace:</span> <span class="hljs-string">kube-system</span>
+<span class="hljs-attr">  labels:</span>
+<span class="hljs-attr">    k8s-app:</span> <span class="hljs-string">fluentd-logging</span>
+<span class="hljs-attr">spec:</span>
+<span class="hljs-attr">  selector:</span>
+<span class="hljs-attr">    matchLabels:</span>
+<span class="hljs-attr">      name:</span> <span class="hljs-string">fluentd-elasticsearch</span>
+<span class="hljs-attr">  template:</span>
+<span class="hljs-attr">    metadata:</span>
+<span class="hljs-attr">      labels:</span>
+<span class="hljs-attr">        name:</span> <span class="hljs-string">fluentd-elasticsearch</span>
+<span class="hljs-attr">    spec:</span>
+<span class="hljs-attr">      tolerations:</span>
+<span class="hljs-attr">      - key:</span> <span class="hljs-string">node-role.kubernetes.io/master</span>
+<span class="hljs-attr">        effect:</span> <span class="hljs-string">NoSchedule</span>
+<span class="hljs-attr">      containers:</span>
+<span class="hljs-attr">      - name:</span> <span class="hljs-string">fluentd-elasticsearch</span>
+<span class="hljs-attr">        image:</span> <span class="hljs-string">k8s.gcr.io/fluentd-elasticsearch:1.20</span>
+<span class="hljs-attr">        resources:</span>
+<span class="hljs-attr">          limits:</span>
+<span class="hljs-attr">            memory:</span> <span class="hljs-number">200</span><span class="hljs-string">Mi</span>
+<span class="hljs-attr">          requests:</span>
+<span class="hljs-attr">            cpu:</span> <span class="hljs-number">100</span><span class="hljs-string">m</span>
+<span class="hljs-attr">            memory:</span> <span class="hljs-number">200</span><span class="hljs-string">Mi</span>
+<span class="hljs-attr">        volumeMounts:</span>
+<span class="hljs-attr">        - name:</span> <span class="hljs-string">varlog</span>
+<span class="hljs-attr">          mountPath:</span> <span class="hljs-string">/var/log</span>
+<span class="hljs-attr">        - name:</span> <span class="hljs-string">varlibdockercontainers</span>
+<span class="hljs-attr">          mountPath:</span> <span class="hljs-string">/var/lib/docker/containers</span>
+<span class="hljs-attr">          readOnly:</span> <span class="hljs-literal">true</span>
+<span class="hljs-attr">      terminationGracePeriodSeconds:</span> <span class="hljs-number">30</span>
+<span class="hljs-attr">      volumes:</span>
+<span class="hljs-attr">      - name:</span> <span class="hljs-string">varlog</span>
+<span class="hljs-attr">        hostPath:</span>
+<span class="hljs-attr">          path:</span> <span class="hljs-string">/var/log</span>
+<span class="hljs-attr">      - name:</span> <span class="hljs-string">varlibdockercontainers</span>
+<span class="hljs-attr">        hostPath:</span>
+<span class="hljs-attr">          path:</span> <span class="hljs-string">/var/lib/docker/containers</span>
+</code></pre>
+</div><footer><div class="comments-section"><div id="disqus_thread"><script>/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = 'tianqi'; // required: replace example with your forum shortname
+
+/* * * DON'T EDIT BELOW THIS LINE * * */
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script></div></div></footer></div><footer class="post-content-footer" flex-row="flex-row"><a class="prev" href="/posts/2018/kubernetes初探"><label>Prev</label><p>kubernetes初探</p></a></footer></article></main><footer id="home-footer">.copyright © 2015 by Tianqi</footer></div></body></html>

@@ -6,6 +6,35 @@
     s.parentNode.insertBefore(hm, s);
 })();</script><link rel="stylesheet" href="/css/base.css"/><link rel="stylesheet" href="/css/post.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/github.min.css"/></head><body><h1 class="blog-logo"><a href="/" title="Home"><img src="/img/logo.png"/></a></h1><nav id="blog-header-nav"><ul class="nav-list"><li><a href="/list" class="nav-item hover-lighten" title="posts">Posts</a></li><li><a href="/photography" class="nav-item hover-lighten" title="photography">Photography</a></li><li><a href="/about" class="nav-item hover-lighten" title="about">About</a></li></ul></nav><div class="main-wrapper"><main id="main"><article id="post-content"><header class="post-content-header"><h1>kubernetes初探</h1><span class="date">2018.04.17</span></header><div class="post-content-body"><div class="article-content"><p>kubernetes入门级别的新手引导。</p>
 <!-- more -->
+<h2 id="-">基础概念</h2>
+<ul>
+<li><strong>Kubernetes Master</strong>是三个跑在同一节点的核心进程的总称：<ul>
+<li><a href="https://kubernetes.io/docs/admin/kube-apiserver/">kube-apiserver</a>：提供对外kubernetes api接口</li>
+<li><a href="https://kubernetes.io/docs/admin/kube-controller-manager/">kube-controller-manager</a>：是一群控制器的总称：<ul>
+<li>node controller: 发现新节点及监控挂掉的节点</li>
+<li>replication controller: 维护确保pods数量正确</li>
+<li>endpoints controller: 绑定services和pods</li>
+<li>service account &amp; token controller: 为新的namespace创建默认账号及api访问token</li>
+</ul>
+</li>
+<li><a href="https://kubernetes.io/docs/admin/kube-scheduler/">kube-scheduler</a>：负责pods与nodes的合理调度分配</li>
+</ul>
+</li>
+<li>其他非master节点上会跑两个进程：<ul>
+<li><a href="https://kubernetes.io/docs/admin/kubelet/">kubelet</a>：负责与master通信</li>
+<li><a href="https://kubernetes.io/docs/admin/kube-proxy/">kube-proxy</a>：负责节点间的网络代理</li>
+</ul>
+</li>
+</ul>
+<p>基本kubernetes对象：pod, service, volume, namespace
+高级kubernetes对象：replicaSet, deployment, statefulSet, daemonSet, job</p>
+<p>一些附加组件：</p>
+<ul>
+<li>DNS: cluster内部的dns解析系统</li>
+<li>web ui: web的控制界面</li>
+<li>container resource monitoring: 资源监控</li>
+<li>cluster-level logging: 负责将container的log保存到特定的log store</li>
+</ul>
 <h2 id="-cluster">创建一个cluster</h2>
 <p>kubernetes简而言之是一个容器管理系统，开源，谷歌背书。</p>
 <p>架构上包含master和node，每个node可以视为一台服务器或ECS，node上可以跑多个process，master管理node。一个线上环境kubernetes集群最少应有三个nodes。</p>
@@ -56,7 +85,7 @@ $ kubectl describe pods     // 查看pods详情，describe命令也可用于<spa
 <p><img src="https://d33wubrfki0l68.cloudfront.net/b964c59cdc1979dd4e1904c25f43745564ef6bee/f3351/docs/tutorials/kubernetes-basics/public/images/module_04_labels.svg" alt=""></p>
 <p>有关命令：</p>
 <pre><code class="lang-bash"><span class="hljs-meta">$</span><span class="bash"> kubectl get services          // 查看所有服务</span>
-<span class="hljs-meta">$</span><span class="bash"> kubectl expose deployment/kubernetes-bootcamp --<span class="hljs-built_in">type</span>=<span class="hljs-string">"NodePort"</span> --port 8080 // 启动service</span>
+<span class="hljs-meta">$</span><span class="bash"> kubectl expose deployment/kubernetes-bootcamp --type=<span class="hljs-string">"NodePort"</span> --port 8080 // 启动service</span>
 <span class="hljs-meta">$</span><span class="bash"> kubectl describe services/kubernetes-bootcamp     // 查看service详情</span>
 
 // 将nodeport存入环境变量
@@ -68,8 +97,8 @@ $ kubectl describe pods     // 查看pods详情，describe命令也可用于<spa
 </code></pre>
 <p>可以自定义标签筛选pods或service：</p>
 <pre><code class="lang-bash"><span class="hljs-meta">$</span><span class="bash"> kubectl describe deployment           // 可以看到标签名称</span>
-<span class="hljs-meta">$</span><span class="bash"> kubectl get pods -l run=kubernetes-bootcamp   // 通过标签筛选pods</span>
-<span class="hljs-meta">$</span><span class="bash"> kubectl get services -l run=kubernetes-bootcamp   //通过标签筛选service</span>
+<span class="hljs-meta">$</span><span class="bash"> kubectl get pods <span class="hljs-_">-l</span> run=kubernetes-bootcamp   // 通过标签筛选pods</span>
+<span class="hljs-meta">$</span><span class="bash"> kubectl get services <span class="hljs-_">-l</span> run=kubernetes-bootcamp   //通过标签筛选service</span>
 
 // 将pod名称存入环境变量
 <span class="hljs-meta">$</span><span class="bash"> <span class="hljs-built_in">export</span> POD_NAME=$(kubectl get pods -o go-template --template <span class="hljs-string">'{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}'</span>)</span>
@@ -78,7 +107,7 @@ $ kubectl describe pods     // 查看pods详情，describe命令也可用于<spa
 $</span><span class="bash"> kubectl label pod <span class="hljs-variable">$POD_NAME</span> app=v1    // 将pod的label改为app=v1</span>
 <span class="hljs-meta">$</span><span class="bash"> kubectl describe pods <span class="hljs-variable">$POD_NAME</span>       // 可以看到label值已变为app=v1</span>
 <span class="hljs-meta">
-$</span><span class="bash"> kubectl delete service -l run=kubernetes-bootcamp // 删除service，但app本身还是在pods里继续跑着的</span>
+$</span><span class="bash"> kubectl delete service <span class="hljs-_">-l</span> run=kubernetes-bootcamp // 删除service，但app本身还是在pods里继续跑着的</span>
 </code></pre>
 <h2 id="-">水平拓展应用</h2>
 <p>水平增加deployment的数量</p>
@@ -104,4 +133,4 @@ var disqus_shortname = 'tianqi'; // required: replace example with your forum sh
     dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
     (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
 })();
-</script></div></div></footer></div><footer class="post-content-footer" flex-row="flex-row"><a class="prev" href="/posts/2018/前端常用代码备份"><label>Prev</label><p>前端常用代码备份</p></a></footer></article></main><footer id="home-footer">.copyright © 2015 by Tianqi</footer></div></body></html>
+</script></div></div></footer></div><footer class="post-content-footer" flex-row="flex-row"><a class="prev" href="/posts/2018/前端常用代码备份"><label>Prev</label><p>前端常用代码备份</p></a><a class="next" href="/posts/2018/kubernetes常用配置文件"><label>Next</label><p>kubernetes常用配置文件</p></a></footer></article></main><footer id="home-footer">.copyright © 2015 by Tianqi</footer></div></body></html>

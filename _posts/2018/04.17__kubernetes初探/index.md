@@ -7,6 +7,30 @@ kubernetes入门级别的新手引导。
 
 <!-- more -->
 
+## 基础概念
+
+ - **Kubernetes Master**是三个跑在同一节点的核心进程的总称：
+     - [kube-apiserver](https://kubernetes.io/docs/admin/kube-apiserver/)：提供对外kubernetes api接口
+     - [kube-controller-manager](https://kubernetes.io/docs/admin/kube-controller-manager/)：是一群控制器的总称：
+         + node controller: 发现新节点及监控挂掉的节点
+         + replication controller: 维护确保pods数量正确
+         + endpoints controller: 绑定services和pods
+         + service account & token controller: 为新的namespace创建默认账号及api访问token
+     - [kube-scheduler](https://kubernetes.io/docs/admin/kube-scheduler/)：负责pods与nodes的合理调度分配
+ - 其他非master节点上会跑两个进程：
+     + [kubelet](https://kubernetes.io/docs/admin/kubelet/)：负责与master通信
+     + [kube-proxy](https://kubernetes.io/docs/admin/kube-proxy/)：负责节点间的网络代理
+
+基本kubernetes对象：pod, service, volume, namespace
+高级kubernetes对象：replicaSet, deployment, statefulSet, daemonSet, job
+
+一些附加组件：
+ - DNS: cluster内部的dns解析系统
+ - web ui: web的控制界面
+ - container resource monitoring: 资源监控
+ - cluster-level logging: 负责将container的log保存到特定的log store
+
+
 ## 创建一个cluster
 
 kubernetes简而言之是一个容器管理系统，开源，谷歌背书。
