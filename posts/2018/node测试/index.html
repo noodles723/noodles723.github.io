@@ -1,0 +1,125 @@
+<html><head><title></title><meta name="keywords"/><meta name="description"/><meta charset="UTF-8"/><meta name="renderer" content="webkit"/><meta name="referrer" content="always"/><meta name="googlebot" content="NOODP"/><meta name="viewport" content="width=device-width,initial-scale=1.0,height=device-height,user-scalable=no,minimum-scale=1.0,maximum-scale=1.0"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="apple-mobile-web-app-status-bar-style" content="black"/><meta name="format-detection" content="telephone=no, email=no"/><meta name="robots" content="index,follow"/><meta http-equiv="Cache-Control" content="no-siteapp"/><meta name="renderer" content="webkit"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="HandheldFriendly" content="true"/><meta name="MobileOptimized" content="320"/><meta name="screen-orientation" content="portrait"/><meta name="x5-orientation" content="portrait"/><meta name="full-screen" content="yes"/><meta name="x5-fullscreen" content="true"/><meta name="browsermode" content="application"/><meta name="x5-page-mode" content="app"/><meta name="msapplication-tap-highlight" content="no"/><script>var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?1d0db9c3c2c6dc7d78ff8eac0ea41f6f";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();</script><link rel="stylesheet" href="/css/base.css"/><link rel="stylesheet" href="/css/post.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/github.min.css"/></head><body><h1 class="blog-logo"><a href="/" title="Home"><img src="/img/logo.png"/></a></h1><nav id="blog-header-nav"><ul class="nav-list"><li><a href="/list" class="nav-item hover-lighten" title="posts">Posts</a></li><li><a href="/photography" class="nav-item hover-lighten" title="photography">Photography</a></li><li><a href="/about" class="nav-item hover-lighten" title="about">About</a></li></ul></nav><div class="main-wrapper"><main id="main"><article id="post-content"><header class="post-content-header"><h1>node测试</h1><span class="date">2018.06.06</span></header><div class="post-content-body"><div class="article-content"><p>记一下node基于koa框架的可行的偏集成测试的方案。</p>
+<!-- more -->
+<h2 id="-">搭环境</h2>
+<p>先提一下用到的一些库：</p>
+<p><a href="https://mochajs.org/">mocha</a>是一个前端单元测试框架，跟<code>jasmine</code>相比更轻量级，功能也更单一，需要配合很多其他模块一起使用。</p>
+<p><a href="http://www.chaijs.com/">chai</a>是一个断言库，提供多种断言方式，像assert, expect或should。</p>
+<p><a href="http://sinonjs.org/">sinon</a>是一个用来提供mock的库。</p>
+<p><a href="http://www.chaijs.com/plugins/chai-http/">char-http</a>是chai的一个插件，用来模拟http请求。</p>
+<p>安装命令：</p>
+<pre><code class="lang-bash">npm i mocha chai chai-<span class="hljs-keyword">http</span> sinon <span class="hljs-comment">--save-dev</span>
+</code></pre>
+<h2 id="-">文件结构</h2>
+<p>mocha会自动去跑test文件夹下的所有测试文件，默认不会跑子目录，要跑的话需要加上<code>--recursive</code>.</p>
+<p>没有全局安装mocha的话可以把mocha命令写进package.json里方便调用：</p>
+<pre><code class="lang-json">{
+    <span class="hljs-attr">"scripts"</span>: {
+        <span class="hljs-attr">"test"</span>: <span class="hljs-string">"mocha --check-leaks --trace-deprecation"</span>,
+        <span class="hljs-attr">"test-all"</span>: <span class="hljs-string">"mocha --check-leaks --trace-deprecation --recursive"</span>     
+    }
+}
+</code></pre>
+<p>为了便于写测试，本身的代码结构可能稍微需要做点调整，将原来index.js里生成koa app的部分提出来成app.js:</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> Koa = <span class="hljs-keyword">require</span>(<span class="hljs-string">'koa'</span>);
+<span class="hljs-keyword">const</span> middleware = <span class="hljs-keyword">require</span>(<span class="hljs-string">'./middleware'</span>);
+<span class="hljs-keyword">const</span> router = <span class="hljs-keyword">require</span>(<span class="hljs-string">'./routers'</span>);
+
+<span class="hljs-keyword">let</span> app = <span class="hljs-keyword">new</span> Koa();
+middleware(app);    <span class="hljs-comment">// 加载中间件</span>
+app.<span class="hljs-keyword">use</span>(router.routes());   <span class="hljs-comment">// 加载路由</span>
+
+exports.app = app;
+</code></pre>
+<p>原来的index.js现在缩减为：</p>
+<pre><code class="lang-js">const app = require(<span class="hljs-string">"./app"</span>).app;
+
+const<span class="hljs-built_in"> server </span>= app.listen(port, () =&gt; {
+    logger.D(`app[<span class="hljs-variable">${app.env}</span>] listen <span class="hljs-variable">${port}</span> <span class="hljs-built_in">..</span>.`);
+});
+
+exports.server = server;
+</code></pre>
+<p>还有点很麻烦的是sinon的stub方法不能mock类似<code>module.exports = function(){...}</code>的这种写法，所以如果模块要引入测试的话最好用<code>exports.xxx = function(){...}</code>这种写法.</p>
+<p>最近看到有个叫<a href="https://github.com/thlorenz/proxyquire">proxyrequire</a>的库好像可以对此做一些suger fix，还没仔细看。</p>
+<h2 id="-">一个简单的实现</h2>
+<p>koa的app对象好像在require时那些中间件就全部挂好了，比较难去stub，这个我还要再研究一下，给出一个可行方案是直接把app.middleware[n]给mock掉，n是需要mock的中间件的index，试代码而定。</p>
+<p>给出一个简单的场景：用户如果有登录返回主页，如果没有登录，跳去登录页。
+这里是偏集成测试，从request开始模拟，用拿到的response判断正不正确，不同去mock对应的controller。</p>
+<pre><code class="lang-js">process.env.NODE_ENV = <span class="hljs-string">"test"</span>;      <span class="hljs-comment">// 也可以是development，反正记得把环境加上</span>
+
+<span class="hljs-keyword">const</span> expect = <span class="hljs-built_in">require</span>(<span class="hljs-string">'chai'</span>).expect;
+<span class="hljs-keyword">const</span> chai = <span class="hljs-built_in">require</span>(<span class="hljs-string">'chai'</span>);
+<span class="hljs-keyword">const</span> chaiHttp = <span class="hljs-built_in">require</span>(<span class="hljs-string">'chai-http'</span>);
+chai.use(chaiHttp);
+
+<span class="hljs-keyword">const</span> sinon = <span class="hljs-built_in">require</span>(<span class="hljs-string">'sinon'</span>);
+
+<span class="hljs-keyword">let</span> logger = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node-logger'</span>);        
+<span class="hljs-keyword">const</span> app = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../app'</span>).app;      <span class="hljs-comment">// 之前提出来的app.js</span>
+
+<span class="hljs-comment">// 这里我准备把koa-session这个中间件mock掉，伪装登录态</span>
+<span class="hljs-keyword">const</span> session = app.middleware[<span class="hljs-number">1</span>];
+
+describe(<span class="hljs-string">'simple test'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    before(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        sinon.stub(logger, <span class="hljs-string">'D'</span>);    <span class="hljs-comment">// 把日志函数给mock掉</span>
+    });
+
+    after(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        logger.D.restore();         <span class="hljs-comment">// 恢复logger</span>
+    });
+
+    describe(<span class="hljs-string">'异常情况'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        it(<span class="hljs-string">'没有session，跳去登录页'</span>, <span class="hljs-function">(<span class="hljs-params"> done </span>) =&gt;</span> {
+            chai.request(app.listen()).get(<span class="hljs-string">'/index'</span>)
+                .end(<span class="hljs-function">(<span class="hljs-params">err, res</span>) =&gt;</span> {
+                    expect(err).to.be.null;
+                    <span class="hljs-comment">// 这里如果用https有些其他认证配置要加，有待研究</span>
+                    expect(res).to.redirectTo(<span class="hljs-string">'http://xxx.com/login'</span>); 
+                    done();
+                });
+        })
+    });
+
+    describe(<span class="hljs-string">'正常情况'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {  <span class="hljs-comment">// 把session给填上，伪装登录</span>
+            app.middleware[<span class="hljs-number">1</span>] = <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">ctx, next</span>) </span>{
+                ctx.session = {token: <span class="hljs-string">"xxx"</span>};       <span class="hljs-comment">// session的值视代码而定</span>
+                <span class="hljs-keyword">await</span> next();
+            };
+        });
+
+        afterEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+            app.middleware[<span class="hljs-number">1</span>] = session;            <span class="hljs-comment">// 恢复session</span>
+        });
+
+        it(<span class="hljs-string">'有session，渲染主页'</span>, <span class="hljs-function">(<span class="hljs-params"> done </span>) =&gt;</span> {
+            chai.request(app.listen()).get(<span class="hljs-string">'/index'</span>)
+                .end(<span class="hljs-function">(<span class="hljs-params">err, res</span>) =&gt;</span> {
+                    expect(err).to.be.null;
+                    expect(res.status).to.equal(<span class="hljs-number">200</span>);
+                    expect(res.body.res).to.match(<span class="hljs-regexp">/主页的标题/</span>);
+                    done();
+                });
+        });
+    });
+});
+</code></pre>
+<p>其中sinon的stub和mock都有很多很好用的方法，视具体情况自行添加。</p>
+<p>测试驱动开发其实是个很好的习惯，但百行代码千行测试，毕竟还是个繁重的体力活。很多代码的生命周期可能并不会持续到需要测试发挥效果的时候，但如果真想写出一个有长久生命力的项目，测试是必不可少的。</p>
+</div><footer><div class="comments-section"><div id="disqus_thread"><script>/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = 'tianqi'; // required: replace example with your forum shortname
+
+/* * * DON'T EDIT BELOW THIS LINE * * */
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script></div></div></footer></div><footer class="post-content-footer" flex-row="flex-row"><a class="prev" href="/posts/2018/kubernetes常用配置文件"><label>Prev</label><p>kubernetes常用配置文件</p></a></footer></article></main><footer id="home-footer">.copyright © 2015 by Tianqi</footer></div></body></html>
