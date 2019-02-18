@@ -138,7 +138,7 @@ chmod 755 ./install.sh && \
 
 # docker管理
 sudo npm i -g marked && sudo npm i -g dockly
-
+brew tap moncho/dry && brew install dry
 
 ```
 

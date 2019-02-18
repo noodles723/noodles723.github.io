@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>文件上传</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+    <meta name="force-rendering" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.6/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <h3>目标url：</h3>
+        <input type="text" v-model="url" style="width:600px;font-size:14px;line-height: 2em;padding: 0 12px;">
+
+        <h3>header：</h3>
+        <textarea cols="60" rows="10" v-model="header"></textarea>
+
+        <h3>其他formData：</h3>
+        <textarea cols="60" rows="10" v-model="data"></textarea>
+
+        <h3>单文件或多文件：</h3>
+        <div>
+            <input type="radio" id="multi1" name="multi" value="single" @change="multi = false" :checked="!multi">
+            <label for="multi1">单文件</label>
+
+            <input type="radio" id="multi2" name="multi" value="multi" @change="multi = true" :checked="multi">
+            <label for="multi2">多文件</label>
+        </div>
+
+        <h3>文件：</h3>
+        <input type="file" id="files" ref="files" @change="handleFileUpload" :multiple="multi">
+
+        <h3>
+            <button @click="submit">提交</button>
+        </h3>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                url: "",
+                header: "",
+                data: "",
+                multi: false,
+                files: null
+            },
+            created() {
+                this.url = localStorage.getItem("url");
+                this.header = localStorage.getItem("header");
+                this.data = localStorage.getItem("data");
+                this.multi = localStorage.getItem("multi") === "true";
+
+                console.log(this.url, this.header, this.data, this.multi)
+            },
+            methods: {
+                handleFileUpload() {
+                    if(!this.$refs.files.files) return;
+
+                    this.files = this.multi ? this.$refs.files.files : this.$refs.files.files[0];
+                },
+                saveArgs() {
+                    localStorage.setItem("url", this.url);
+                    localStorage.setItem("header", this.header);
+                    localStorage.setItem("data", this.data);
+                    localStorage.setItem("multi", this.multi);
+                },
+                submit() {
+                    if(!this.files) return alert("请选择文件");
+                    if(!this.url) return alert("url");
+
+                    let header = {}, data = {};
+                    try {
+                        if(this.header) header = JSON.parse(this.header);
+                        if(this.data) data = JSON.parse(this.data);
+                    } catch(e) {
+                        return alert("解析header或data失败");
+                    }
+
+                    this.saveArgs();
+
+                    let formData = new FormData();
+
+                    Object.keys(data).forEach(k => formData.append(k.toString(), data[k]));
+
+                    console.log(this.files)
+                    formData.append('file', this.files);
+
+                    axios.post( this.url,
+                        formData,
+                        {
+                            headers: Object.assign({}, {
+                                'Content-Type': 'multipart/form-data',
+                            }, header)
+                        }
+                    ).then(res => {
+                        console.log(res);
+                    }).catch(e => {
+                        alert(e);
+                    });
+                }
+            }
+        })
+    </script>
+</body>
+</html>
