@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<body>
+  <button type="button" name="button" onclick="renew()" style="width:100px; display:inline-block; font-size: 30px; background: aquamarine;margin: 24px 48px;">生成</button>
+  <button type="button" name="button" onclick="copy()" style="width:100px; display:inline-block; font-size: 30px; background: aquamarine;margin: 24px 48px;">复制</button>
+  <textarea name="name" rows="8" cols="80" id="textarea" style="display:block;font-size: 24px;border:1px solid black"></textarea>
+  <script type="text/javascript">
+    window.renew = function() {
+      var rand = function() {return (35.6 + Math.random() * 1.1).toFixed(1);};
+      var name = ["张庆年", "冯则均", "冯红玉", "冯敬红", "王天祺", "王子恒"];
+      var text = "";
+      name.forEach(function(n){
+        text += n + " " + rand() + "℃\n";
+      });
+      document.getElementById("textarea").innerHTML = text;
+    }
+    window.copy = function() {
+      document.getElementById("textarea").select();
+      document.execCommand('copy');
+    }
+    window.onload = renew;
+  </script>
+</body>
