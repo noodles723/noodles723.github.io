@@ -28,7 +28,7 @@
     "imagemin-pngquant": "^7.0.0",
     "jimp": "^0.6.0",
     "marked": "^0.3.6",
-    "shelljs": "^0.7.7",
+    "shelljs": "^0.8.5",
     "stylus": "^0.54.5",
     "vue": "^2.6.6",
     "yaml-front-matter": "^3.4.0",
