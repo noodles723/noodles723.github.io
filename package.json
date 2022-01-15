@@ -27,7 +27,7 @@
     "imagemin-jpeg-recompress": "^6.0.0",
     "imagemin-pngquant": "^7.0.0",
     "jimp": "^0.6.0",
-    "marked": "^0.3.6",
+    "marked": "^4.0.10",
     "shelljs": "^0.7.7",
     "stylus": "^0.54.5",
     "vue": "^2.6.6",
